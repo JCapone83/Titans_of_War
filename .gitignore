@@ -1,0 +1,56 @@
+# Dependencies and local installs
+node_modules/
+
+# Build and package output
+dist/
+*.tgz
+public/assets-download-report.json
+
+# Logs and local runtime state
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.vite/
+.cache/
+coverage/
+local-saves/
+save-data/
+exports/
+
+# OS/editor noise
+.DS_Store
+.idea/
+.vscode/
+
+# Local launchers and private planning notes
+*.command
+Titans_of_War_*.md
+
+# Media files with unresolved or separate redistribution review
+public/images/cw_pictures/*.jpg
+public/images/cw_pictures/*.jpeg
+public/images/cw_pictures/*.png
+!public/images/cw_pictures/unknown.svg
+!public/images/cw_pictures/map_fort_sumter_charleston_harbor_loc.jpg
+!public/images/cw_pictures/map_antietam_sharpsburg_loc.jpg
+!public/images/cw_pictures/map_gettysburg_cemetery_ridge_loc.jpg
+!public/images/cw_pictures/map_petersburg_crater_loc.jpg
+!public/images/cw_pictures/map_appomattox_retreat_lines_loc.jpg
+!public/images/cw_pictures/map_wilderness_russell.jpg
+!public/images/cw_pictures/map_second_manassas_aug30_movements.png
+!public/images/cw_pictures/battlefield start of war.jpg
+!public/images/cw_pictures/battlefield Jackson flank march.jpg
+!public/images/cw_pictures/battlefield MD campaign.jpg
+!public/images/cw_pictures/battlefield 5.jpg
+!public/images/cw_pictures/battlefield1.jpg
+!public/images/cw_pictures/battlefield2.jpg
+!public/images/cw_pictures/battlefield3.jpg
+!public/images/cw_pictures/battlefield4.jpg
+!public/images/cw_pictures/battlefield5.jpg
+!public/images/cw_pictures/art1.jpg
+!public/images/cw_pictures/art2.jpg
+!public/images/cw_pictures/art3.jpg
+!public/images/cw_pictures/art4.jpg
+!public/images/cw_pictures/art5.jpg
+public/audio/dixie_instrumental.mp3

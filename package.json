@@ -1,0 +1,50 @@
+{
+  "name": "titans-of-war",
+  "version": "0.3.0",
+  "description": "A historical educational strategy game about Civil War command decisions, campaign pressure, and alternate-history outcomes.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Titans Forge",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JCapone83/titans-of-war.git"
+  },
+  "bugs": {
+    "url": "https://github.com/JCapone83/titans-of-war/issues"
+  },
+  "homepage": "https://github.com/JCapone83/titans-of-war#readme",
+  "keywords": [
+    "strategy-game",
+    "history",
+    "education",
+    "civil-war",
+    "simulation"
+  ],
+  "engines": {
+    "node": ">=20",
+    "npm": ">=10"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "benchmark": "node scripts/benchmark-engine.mjs",
+    "test": "node scripts/smoke-test.mjs && node scripts/validate-content.mjs",
+    "validate-assets": "node scripts/validate-assets.mjs",
+    "validate": "npm test && npm run validate-assets",
+    "download-assets": "node scripts/download-historical-assets.mjs",
+    "lint": "node scripts/validate-content.mjs",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "lucide-react": "^1.17.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^6.0.2",
+    "vite": "^8.0.15"
+  }
+}

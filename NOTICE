@@ -1,0 +1,35 @@
+Titans of War Notice
+====================
+
+Titans of War is a historical educational strategy game.
+
+Code License
+------------
+
+The application source code is licensed under the MIT License. See LICENSE.
+
+Media and Historical Source Material
+------------------------------------
+
+Bundled or downloadable historical media is not relicensed under MIT unless
+explicitly stated. Media entries keep their own provenance, source URL,
+institution, and license metadata in:
+
+- src/game/mediaCatalog.js
+- src/game/audioCatalog.js
+- src/game/historicalAssetManifest.js
+- docs/media-sourcing.md
+- docs/historical_assets_curation.md
+
+Public-domain and permissively licensed assets may be used in the public app
+when their catalog entry is marked verified. Assets marked needs-review or
+recording-needed are placeholders or local development targets and should not
+be treated as public release assets.
+
+Historical/Educational Scope
+----------------------------
+
+Titans of War is intended as an educational strategy simulation. It presents
+historical command pressures, logistics, morale, political factions, and
+alternate-history branches for study and gameplay. It is not an endorsement of
+any historical faction or ideology.

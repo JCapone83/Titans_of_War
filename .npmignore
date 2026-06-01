@@ -1,0 +1,26 @@
+# This project is released on GitHub first. Keep accidental npm packages lean.
+dist/
+node_modules/
+*.tgz
+*.log
+.DS_Store
+.vite/
+.cache/
+coverage/
+local-saves/
+save-data/
+exports/
+
+# Internal planning docs are not public package artifacts.
+Titans_of_War_*.md
+
+# Heavy media is documented in NOTICE and source manifests, but not packed to npm.
+public/audio/
+public/images/
+src/assets/images/
+public/assets-download-report.json
+
+# Local launchers/editor files
+*.command
+.idea/
+.vscode/
