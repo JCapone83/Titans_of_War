@@ -948,6 +948,15 @@ assert.match(
   /next:\s*"fall_of_atlanta"/,
   'Replacing Johnston with Hood should explicitly route into the Fall of Atlanta scenario'
 );
+const recognitionCrisisSource = scenariosSource.slice(
+  scenariosSource.indexOf('id: "gettysburg_recognition_crisis"'),
+  scenariosSource.indexOf('id: "chickamauga"')
+);
+assert.match(
+  recognitionCrisisSource,
+  /turn:\s*0/,
+  'Gettysburg recognition crisis should be branch-only, not the default linear turn 14 scenario'
+);
 
 const mappedTacticalMedia = resolveScenarioMediaSet('antietam').tacticalMap;
 assert.equal(mappedTacticalMedia.kind, 'map', 'mapped tactical scenarios should use verified terrain maps');

@@ -1181,7 +1181,7 @@ export const STATIC_SCENARIOS = [
 
 {
     id: "gettysburg_recognition_crisis",
-    turn: 14,
+    turn: 0,
     interlude: true,
     date: "July 1863",
     actor: "President Jefferson Davis",
