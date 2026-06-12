@@ -37,6 +37,7 @@ export const STATIC_SCENARIOS = [
         proposer: "hotspur",
         costDescription: "Consumes 20 Military Strength, sparks total war.",
         successRate: 0.5,
+        next: "manassas_battlefield",
         successEffects: {
           metrics: { militaryStrength: -10, munitions: -20, publicMorale: +30, divergenceIndex: +0.10 },
           shards: { hotspur: +35, fox: -5 }
@@ -65,6 +66,7 @@ export const STATIC_SCENARIOS = [
         text: "Delay action by claiming technical valve failures, waiting for the relief fleet.",
         proposer: "wolf",
         costDescription: "Saves munitions, moderate risk of battery containment.",
+        next: "manassas_battlefield",
         effects: {
           metrics: { munitions: -5, militaryStrength: -15, publicMorale: -5 },
           shards: { wolf: +25, hotspur: -10 }

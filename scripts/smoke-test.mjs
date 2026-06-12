@@ -852,6 +852,38 @@ const freshCampaign = createFreshCampaignState(12345, 'fort_sumter');
 assert.equal(freshCampaign.seed, 12345, 'fresh campaign state should preserve the requested seed');
 assert.equal(freshCampaign.currentTurn, 1, 'fresh campaign state should start at turn 1');
 
+const fortSumterScenarioSource = readFileSync(new URL('../src/game/scenarios.js', import.meta.url), 'utf8');
+const fortSumterSource = fortSumterScenarioSource.slice(
+  fortSumterScenarioSource.indexOf('id: "fort_sumter"'),
+  fortSumterScenarioSource.indexOf('id: "radical_republican_crisis"')
+);
+function extractChoiceSource(source, choiceId) {
+  const start = source.indexOf(`id: "${choiceId}"`);
+  assert.ok(start >= 0, `expected Fort Sumter ${choiceId} choice to exist`);
+  const nextChoice = source.indexOf('id: "option_', start + choiceId.length + 6);
+  return source.slice(start, nextChoice >= 0 ? nextChoice : source.length);
+}
+assert.match(
+  extractChoiceSource(fortSumterSource, 'option_a'),
+  /next:\s*"manassas_battlefield"/,
+  'Fort Sumter aggressive defense should route to First Manassas, not the Radical Republicans crisis'
+);
+assert.match(
+  extractChoiceSource(fortSumterSource, 'option_b'),
+  /next:\s*"radical_republican_crisis"/,
+  'Fort Sumter negotiated evacuation should be the Radical Republicans crisis route'
+);
+assert.match(
+  extractChoiceSource(fortSumterSource, 'option_c'),
+  /next:\s*"manassas_battlefield"/,
+  'Fort Sumter delay should route to First Manassas, not the Radical Republicans crisis'
+);
+assert.match(
+  extractChoiceSource(fortSumterSource, 'option_d'),
+  /next:\s*"charleston_harbor_escape"/,
+  'Fort Sumter barge escape should keep its Charleston Harbor escape branch'
+);
+
 const snapshot = createCampaignSnapshot(
   { ...freshCampaign, currentTurn: 2, scenarioId: 'charleston_harbor_escape' },
   { id: 'charleston_harbor_escape', title: 'Charleston Harbor Escape', choices: [] },
