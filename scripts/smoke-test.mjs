@@ -957,6 +957,20 @@ assert.match(
   /turn:\s*0/,
   'Gettysburg recognition crisis should be branch-only, not the default linear turn 14 scenario'
 );
+const petersburgSource = scenariosSource.slice(
+  scenariosSource.indexOf('id: "petersburg_siege"'),
+  scenariosSource.indexOf('id: "five_forks"')
+);
+assert.equal(
+  /rail\s*guns?|railway\s*guns?/i.test(petersburgSource),
+  false,
+  'Petersburg should not use rail-gun technology in the Crater options'
+);
+assert.equal(
+  /ceasefire|cease-fire/i.test(extractChoiceSource(petersburgSource, 'option_c')),
+  false,
+  'Petersburg option C should be an aggressive sortie path, not a cease-fire proposal'
+);
 
 const mappedTacticalMedia = resolveScenarioMediaSet('antietam').tacticalMap;
 assert.equal(mappedTacticalMedia.kind, 'map', 'mapped tactical scenarios should use verified terrain maps');

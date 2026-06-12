@@ -2334,25 +2334,25 @@ export const STATIC_SCENARIOS = [
       },
       {
         id: "option_c",
-        text: "Send secret envoys to Lincoln's cabinet to propose a conditional ceasefire.",
+        text: "Mount a night sortie against Grant's forward siege works, wrecking sap rollers, gabions, and exposed rail parties before withdrawing.",
         proposer: "wolf",
-        costDescription: "Consumes 20 Treasury, high strategic divergence.",
+        costDescription: "Aggressive but limited action. Costs men and ammunition while preserving the campaign line.",
         effects: {
-          metrics: { treasury: -16, publicMorale: +10, divergenceIndex: +0.12 },
-          shards: { wolf: +30, hotspur: -20 }
+          metrics: { militaryStrength: -10, munitions: -12, publicMorale: +14, divergenceIndex: +0.05 },
+          shards: { wolf: +22, hotspur: +12, fox: -6 }
         },
-        consequence: "Secret talks leaked. Northern public morale staggered, but Grant refused to stop the siege. The war grinds on toward its inevitable conclusion."
+        consequence: "The sortie burns siege material, disrupts forward working parties, and forces Grant's engineers to rebuild exposed approaches under fire. It does not break the siege, but it proves the Petersburg line can still strike back without gambling the whole army."
       },
       {
         id: "option_d",
-        text: "Deploy automated iron mines and rail guns to shell the crater perimeter.",
+        text: "Seed the crater approaches with new land mines and electrically fired torpedoes, then channel the Union assault into marked killing ground.",
         proposer: "sovereign",
-        costDescription: "Consumes 30 Treasury, high tech alternative history.",
+        costDescription: "Consumes Treasury and munitions, but stays within period mine and torpedo experimentation.",
         effects: {
-          metrics: { treasury: -30, munitions: -15, militaryStrength: -5 },
+          metrics: { treasury: -18, munitions: -18, militaryStrength: -4, divergenceIndex: +0.04 },
           shards: { fox: +15, wolf: +10 }
         },
-        consequence: "The improvised rail guns successfully closed the breach with heavy iron shrapnel. A desperate technological innovation that buys a few more weeks of resistance in the trenches."
+        consequence: "The new mines do not look like a future war machine; they look like desperate field engineering. Wires, buried shells, and marked lanes slow the Union rush long enough for artillery and reserves to seal the crater perimeter."
       }
     ]
   },
@@ -3141,8 +3141,8 @@ export const HISTORIC_ADVISORS = {
   },
   petersburg_siege: {
     hotspur: "Mahone is ready! Launch a desperate counter-attack into the Crater mine breach and trap their divisions inside the hole!",
-    fox: "The Petersburg line is thin. Order an immediate, orderly evacuation to Richmond before Grant envelops our flank.",
-    wolf: "Send secret peace envoys to Lincoln's cabinet. Propose a conditional ceasefire before our lines collapse completely."
+    fox: "Seal the secondary works, contain the breach, and preserve the army. A line that survives today can still shape tomorrow.",
+    wolf: "Hit Grant's exposed siege works at night, wreck the tools of the advance, then return before he can turn the sortie into a general battle."
   },
   five_forks: {
     hotspur: "Lee ordered Five Forks held at all hazards. Stand on the crossroads and make Sheridan pay for the railroad.",

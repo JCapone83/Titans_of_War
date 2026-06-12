@@ -819,8 +819,8 @@ const CHOICE_SCORE_CARD_OVERRIDES = {
 
   'petersburg_siege:option_a': { tactical: 11, strategic: 5 },
   'petersburg_siege:option_b': { tactical: 10, strategic: 5 },
-  'petersburg_siege:option_c': { tactical: 0, strategic: 6 },
-  'petersburg_siege:option_d': { tactical: -2, strategic: -4 },
+  'petersburg_siege:option_c': { tactical: 8, strategic: 7 },
+  'petersburg_siege:option_d': { tactical: 7, strategic: 6 },
 
   'five_forks:option_a': { tactical: -22, strategic: -14 },
   'five_forks:option_b': { tactical: 17, strategic: 10 },
