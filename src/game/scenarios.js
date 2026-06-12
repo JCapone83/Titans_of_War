@@ -1759,11 +1759,12 @@ export const STATIC_SCENARIOS = [
         text: "Replace Johnston, empower Hood, and seek an immediate offensive blow north of Atlanta.",
         proposer: "hotspur",
         costDescription: "Heavy military loss risk, morale surge, faster political climax.",
+        next: "fall_of_atlanta",
         effects: {
           metrics: { militaryStrength: +6, munitions: -16, publicMorale: +16, divergenceIndex: +0.08 },
           shards: { hotspur: +26, fox: -18, wolf: -6 }
         },
-        consequence: "The command change briefly stiffens offensive cohesion and calls stragglers back to the colors. Hood's aggressiveness restores confidence and momentum, but the campaign is now betting that immediate violence can achieve what Johnston sought through time."
+        consequence: "The command change briefly stiffens offensive cohesion and calls stragglers back to the colors. Hood's aggressiveness restores confidence and momentum, but it also accelerates the decisive fight for Atlanta's railroads. The campaign now turns toward Jonesborough, evacuation, and the September headline Lincoln needs."
       },
       {
         id: "option_b",

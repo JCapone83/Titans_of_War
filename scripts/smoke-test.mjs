@@ -939,6 +939,15 @@ assert.equal(
   false,
   'scenario cards should use imported Vite assets, not raw /src image strings'
 );
+const atlantaPressureSource = scenariosSource.slice(
+  scenariosSource.indexOf('id: "atlanta_election_pressure"'),
+  scenariosSource.indexOf('id: "atlanta_holds_october"')
+);
+assert.match(
+  extractChoiceSource(atlantaPressureSource, 'option_a'),
+  /next:\s*"fall_of_atlanta"/,
+  'Replacing Johnston with Hood should explicitly route into the Fall of Atlanta scenario'
+);
 
 const mappedTacticalMedia = resolveScenarioMediaSet('antietam').tacticalMap;
 assert.equal(mappedTacticalMedia.kind, 'map', 'mapped tactical scenarios should use verified terrain maps');
