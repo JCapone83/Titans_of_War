@@ -9,6 +9,7 @@ export const INITIAL_STATE = {
     militaryStrength: 85,
     munitions: 80,
     treasury: 75,
+    foodSupply: 78,
     publicMorale: 80
   },
   shards: {

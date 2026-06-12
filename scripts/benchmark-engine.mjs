@@ -5,7 +5,7 @@ import { createServer } from 'vite';
 import { createFreshCampaignState } from '../src/game/campaignStorage.js';
 import { buildCampaignChronicle } from '../src/game/chronicleExporter.js';
 import { runHeadlessCampaignAsync } from '../src/game/headlessCampaign.js';
-import { summarizePoliticalEconomy } from '../src/game/simulationEngine.js';
+import { CAMPAIGN_FINAL_TURN, summarizePoliticalEconomy } from '../src/game/simulationEngine.js';
 
 const OLLAMA_BASE = 'http://localhost:11434';
 const OLLAMA_GENERATE = `${OLLAMA_BASE}/api/generate`;
@@ -15,12 +15,11 @@ const DEFAULT_SEEDS = [1861, 1862, 1863];
 
 const DECISION_SYSTEM_PROMPT = `You are judging one turn of an alternate-history American Civil War strategy simulation.
 
-Choose the single option that best maximizes the campaign's long-run Strategic Stability Index:
-- survival through 13 turns
-- resource health
-- faction harmony
-- crisis management
-- command stability
+Choose the single option that best maximizes the campaign's long-run report card:
+- Tactical Smarts: sound battlefield decisions, preservation of armies, and correct operational timing
+- Strategic Brilliance: political, logistical, diplomatic, food, treasury, and cabinet judgment
+- Timeline Fidelity: staying closer to the historical chronology unless divergence is worth the cost
+- survival through ${CAMPAIGN_FINAL_TURN} turns
 
 Return ONLY valid JSON matching this schema:
 {"choiceId":"option_a","rationale":"One concise sentence."}
@@ -51,7 +50,7 @@ function parseArgs(argv) {
     models: [],
     useInstalledModels: false,
     seeds: [...DEFAULT_SEEDS],
-    maxTurns: 13,
+    maxTurns: CAMPAIGN_FINAL_TURN,
     outputPath: '',
     markdownOutputPath: '',
     markdown: false,
@@ -130,10 +129,10 @@ Usage:
 
 Options:
   --policies balanced,hotspur,fox,wolf   Heuristic contestants to run
-  --models gemma2:2b,llama3.2:3b         Local Ollama models to benchmark as decision selectors
+  --models gemma4:12b-it,qwen2.5:7b      Local Ollama models to benchmark as decision selectors
   --models installed                     Benchmark every installed local Ollama chat model
   --seeds 1861,1862,1863                 Campaign seeds to evaluate
-  --max-turns 13                         Turn cap for each run
+  --max-turns ${CAMPAIGN_FINAL_TURN}                         Turn cap for each run
   --out benchmark/latest.json            Save full benchmark payload to disk
   --out-md benchmark/latest.md           Save a markdown leaderboard to disk
   --markdown                             Print markdown instead of the console table
@@ -204,6 +203,7 @@ function baselineChoiceScore(state, scenario, choice) {
     militaryStrength: clamp((state.metrics?.militaryStrength || 0) - 5 + (expected.metrics?.militaryStrength || 0)),
     munitions: clamp((state.metrics?.munitions || 0) - 5 + (expected.metrics?.munitions || 0)),
     treasury: clamp((state.metrics?.treasury || 0) - 5 + (expected.metrics?.treasury || 0)),
+    foodSupply: clamp((state.metrics?.foodSupply ?? 50) - 2 + (expected.metrics?.foodSupply || 0)),
     publicMorale: clamp((state.metrics?.publicMorale || 0) + (expected.metrics?.publicMorale || 0))
   };
   const projectedDivergence = Math.max(0, Math.min(1, (state.divergenceIndex || 0) + (expected.metrics?.divergenceIndex || 0)));
@@ -212,6 +212,7 @@ function baselineChoiceScore(state, scenario, choice) {
   score += projectedMetrics.militaryStrength * 2.4;
   score += projectedMetrics.publicMorale * 2.2;
   score += projectedMetrics.munitions * 1.8;
+  score += projectedMetrics.foodSupply * 1.7;
   score += projectedMetrics.treasury * 1.6;
 
   if (projectedDivergence > 0.45) {
@@ -251,6 +252,7 @@ function pickPolicyChoice(policy, state, scenario) {
     if (policy === 'hotspur') {
       score += choice.proposer === 'hotspur' ? 45 : 0;
       score += (expected.metrics?.publicMorale || 0) * 2.2;
+      score += (expected.metrics?.foodSupply || 0) * 0.5;
       score += (expected.metrics?.divergenceIndex || 0) * 120;
       score -= Math.max(0, -(expected.metrics?.militaryStrength || 0)) * 0.6;
     }
@@ -259,12 +261,14 @@ function pickPolicyChoice(policy, state, scenario) {
       score += choice.proposer === 'fox' ? 45 : 0;
       score += (expected.metrics?.munitions || 0) * 2.2;
       score += (expected.metrics?.treasury || 0) * 1.5;
+      score += (expected.metrics?.foodSupply || 0) * 2;
       score -= (expected.metrics?.divergenceIndex || 0) * 120;
     }
 
     if (policy === 'wolf') {
       score += choice.proposer === 'wolf' ? 45 : 0;
       score += (expected.metrics?.treasury || 0) * 1.8;
+      score += (expected.metrics?.foodSupply || 0);
       score += (expected.metrics?.divergenceIndex || 0) * 80;
       score += (expected.shards?.wolf || 0) * 2.5;
     }
@@ -298,7 +302,7 @@ function buildModelDecisionPrompt(state, scenario) {
     return `- ${choice.id}: proposer=${choice.proposer}; text=${choice.text}; cost=${choice.costDescription || 'n/a'}; expected effects=${metrics}; expected shard effects=${shards}`;
   }).join('\n');
 
-  return `Campaign seed: ${state.seed}\nTurn: ${state.currentTurn}\nActor: ${state.actor} (${state.roleLabel})\nScenario: ${scenario.title}\nDescription: ${scenario.description}\nResources: military ${state.metrics.militaryStrength}, munitions ${state.metrics.munitions}, treasury ${state.metrics.treasury}, morale ${state.metrics.publicMorale}\nDivergence: ${(state.divergenceIndex * 100).toFixed(1)}%\nUnstable factions: ${unstableFactions || 'none'}\nRecent history:\n${history || 'Campaign just beginning.'}\n\nOptions:\n${choices}\n\nChoose the option id that best preserves long-run strategic stability.`;
+  return `Campaign seed: ${state.seed}\nTurn: ${state.currentTurn}\nActor: ${state.actor} (${state.roleLabel})\nScenario: ${scenario.title}\nDescription: ${scenario.description}\nResources: military ${state.metrics.militaryStrength}, munitions ${state.metrics.munitions}, treasury ${state.metrics.treasury}, food ${state.metrics.foodSupply}, morale ${state.metrics.publicMorale}\nDivergence: ${(state.divergenceIndex * 100).toFixed(1)}%\nUnstable factions: ${unstableFactions || 'none'}\nRecent history:\n${history || 'Campaign just beginning.'}\n\nOptions:\n${choices}\n\nChoose the option id that best preserves long-run strategic stability.`;
 }
 
 async function chooseWithModel(model, state, scenario) {
@@ -434,11 +438,11 @@ function pad(value, width) {
 }
 
 function formatTable(results, options) {
-  const runColumnLabel = options.maxTurns >= 13 ? 'Survival' : 'Cap Done';
+  const runColumnLabel = options.maxTurns >= CAMPAIGN_FINAL_TURN ? 'Survival' : 'Cap Done';
   const header = [
     pad('Contestant', 28),
     pad('Type', 8),
-    pad('Avg SSI', 10),
+    pad('Avg Score', 10),
     pad(runColumnLabel, 10),
     pad('Avg Div', 9),
     pad('Crises', 12)
@@ -448,7 +452,7 @@ function formatTable(results, options) {
     pad(result.label, 28),
     pad(result.type, 8),
     pad(result.averageScore, 10),
-    pad(formatPercent(options.maxTurns >= 13 ? result.survivalRate : result.capCompletionRate), 10),
+    pad(formatPercent(options.maxTurns >= CAMPAIGN_FINAL_TURN ? result.survivalRate : result.capCompletionRate), 10),
     pad(result.averageDivergence.toFixed(3), 9),
     pad(`${result.averageCrisesResolved}/${result.averageCrisesFaced}`, 12)
   ].join(' '));
@@ -480,19 +484,19 @@ function formatDecisionExcerpt(history, preferSuccess) {
 }
 
 function formatMarkdown(results, options, generatedAt) {
-  const runColumnLabel = options.maxTurns >= 13 ? 'Survival' : 'Cap Done';
+  const runColumnLabel = options.maxTurns >= CAMPAIGN_FINAL_TURN ? 'Survival' : 'Cap Done';
   const lines = [
     '# Titans of War Benchmark League',
     '',
     `*Generated:* ${generatedAt}`,
     `*Seeds:* ${options.seeds.join(', ')} | *Max turns:* ${options.maxTurns}`,
     '',
-    `| Rank | Contestant | Type | Avg SSI | ${runColumnLabel} | Avg Div | Crises |`,
+    `| Rank | Contestant | Type | Avg Score | ${runColumnLabel} | Avg Div | Crises |`,
     '| --- | --- | --- | ---: | ---: | ---: | --- |',
   ];
 
   results.forEach((result, index) => {
-    const runRate = options.maxTurns >= 13 ? result.survivalRate : result.capCompletionRate;
+    const runRate = options.maxTurns >= CAMPAIGN_FINAL_TURN ? result.survivalRate : result.capCompletionRate;
     lines.push(`| ${index + 1} | ${result.label} | ${result.type} | ${result.averageScore} | ${formatPercent(runRate)} | ${result.averageDivergence.toFixed(3)} | ${result.averageCrisesResolved}/${result.averageCrisesFaced} |`);
   });
 

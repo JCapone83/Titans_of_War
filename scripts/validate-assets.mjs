@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import crypto from 'node:crypto';
 import path from 'node:path';
 import { AUDIO_TRACK_LIBRARY } from '../src/game/audioCatalog.js';
 import { HISTORICAL_ASSET_MANIFEST } from '../src/game/historicalAssetManifest.js';
@@ -13,6 +14,10 @@ function filePath(asset) {
 
 function rel(file) {
   return path.relative(ROOT, file);
+}
+
+function sha256(file) {
+  return crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex');
 }
 
 function validateManifest(errors, warnings) {
@@ -43,6 +48,10 @@ function validateManifest(errors, warnings) {
 
     if (asset.status === 'curated' && !asset.sourceUrl) {
       errors.push(`${prefix}: curated assets must include sourceUrl`);
+    }
+
+    if (asset.type === 'audio' && asset.status === 'curated' && !asset.sha256) {
+      errors.push(`${prefix}: curated audio must include an audited sha256`);
     }
 
     if (asset.status === 'pending' && !asset.sourceUrl) {
@@ -100,6 +109,13 @@ function validateLocalFiles(errors, warnings) {
       errors.push(`Audio asset must be mp3: ${rel(target)}`);
     }
 
+    if (asset.sha256) {
+      const actualHash = sha256(target);
+      if (actualHash !== asset.sha256) {
+        errors.push(`Hash mismatch: ${rel(target)} (expected ${asset.sha256}, found ${actualHash})`);
+      }
+    }
+
     if (asset.type === 'image' && !/\.(jpg|jpeg|png|webp|avif|svg)$/i.test(asset.filename)) {
       errors.push(`Image asset has unsupported extension: ${rel(target)}`);
     }
@@ -113,6 +129,15 @@ function main() {
   validateManifest(errors, warnings);
   validateCatalogLinks(errors);
   validateLocalFiles(errors, warnings);
+
+  Object.entries(MEDIA_CATALOG).forEach(([key, media]) => {
+    if (media.useInApp && media.provenanceStatus !== 'verified') {
+      errors.push(`Media "${key}": public in-app asset must have verified provenance`);
+    }
+    if (media.useInApp && (!media.sourceUrl || !media.license)) {
+      errors.push(`Media "${key}": public in-app asset must include sourceUrl and license`);
+    }
+  });
 
   if (warnings.length) {
     console.log('Asset warnings:');

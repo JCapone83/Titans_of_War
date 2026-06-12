@@ -1,0 +1,200 @@
+[
+  {
+    "proposal_id": "richmond_evacuation_262d5424",
+    "type": "scenario_stage",
+    "status": "integrated",
+    "agent": "caesar_agent",
+    "created_at": "2026-06-01T20:55:32Z",
+    "content": {
+      "scenario_id": "richmond_evacuation",
+      "turn": 19,
+      "title": "Richmond Evacuation - The Capital Burns",
+      "date": "April 2-3, 1865",
+      "actor": "General Robert E. Lee",
+      "roleLabel": "Army Commander",
+      "description": "The Petersburg line has cracked and Richmond can no longer be defended as a capital, depot, and symbol at the same time. Fires are spreading near the warehouses, government clerks are trying to move records south, and Davis needs the army preserved long enough to keep any national authority alive. Lee must decide whether Richmond is worth one more stand, whether the army should move immediately toward Amelia Court House, or whether the evacuation itself can be used to shape the final political terms of the war.",
+      "letterTarget": "President Jefferson Davis",
+      "choices": [
+        {
+          "id": "option_a",
+          "text": "Hold a short rearguard defense at Richmond to buy the government more time.",
+          "proposer": "hotspur",
+          "costDescription": "Severe military cost, temporary morale and political cover.",
+          "effects": {
+            "metrics": {
+              "militaryStrength": -28,
+              "munitions": -18,
+              "publicMorale": 10
+            },
+            "shards": {
+              "hotspur": 25,
+              "fox": -15
+            }
+          },
+          "consequence": "The delay lets more officials escape, but every hour spent near the capital risks trapping the Army of Northern Virginia against converging Union columns."
+        },
+        {
+          "id": "option_b",
+          "text": "Evacuate immediately and preserve the army for a linkup farther south.",
+          "proposer": "fox",
+          "costDescription": "Preserves strength, morale shock from abandoning the capital.",
+          "effects": {
+            "metrics": {
+              "militaryStrength": 8,
+              "munitions": 4,
+              "publicMorale": -18
+            },
+            "shards": {
+              "fox": 28,
+              "hotspur": -15
+            }
+          },
+          "consequence": "The army leaves Richmond before the roads fully close. The decision is bleak, but it keeps organized command alive for at least one more march."
+        },
+        {
+          "id": "option_c",
+          "text": "Frame the evacuation as disciplined national continuity and seek mediated terms.",
+          "proposer": "wolf",
+          "costDescription": "Treasury cost, diplomatic divergence, limited battlefield relief.",
+          "effects": {
+            "metrics": {
+              "treasury": -15,
+              "publicMorale": 6,
+              "divergenceIndex": 0.08
+            },
+            "shards": {
+              "wolf": 30,
+              "hotspur": -8
+            }
+          },
+          "consequence": "Dispatches emphasize order rather than collapse. The military situation remains desperate, but foreign and Northern political readers see a government still trying to negotiate rather than dissolve."
+        },
+        {
+          "id": "option_d",
+          "text": "Destroy military stores, protect civilian corridors, and move by night.",
+          "proposer": "sovereign",
+          "costDescription": "Moderate supply loss, stronger civilian legitimacy.",
+          "effects": {
+            "metrics": {
+              "munitions": -12,
+              "publicMorale": 12,
+              "treasury": -8
+            },
+            "shards": {
+              "fox": 12,
+              "wolf": 12
+            }
+          },
+          "consequence": "The army loses stores it cannot carry, but fewer civilians are abandoned to the fires and confusion. The retreat begins with more order than Richmond expected."
+        }
+      ],
+      "historical_context": "Richmond fell on April 3, 1865 after the Petersburg breakthrough. This proposal creates a playable decision between Petersburg and Appomattox.",
+      "designer_notes": "Likely fits as a late-game branch or new stage before Appomattox."
+    },
+    "validation_errors": [],
+    "is_valid": true,
+    "comments": [],
+    "submitted_at": "2026-06-01T20:55:32Z",
+    "integrated_at": "2026-06-01T21:16:26Z"
+  },
+  {
+    "proposal_id": "richmond_evacuation_theater_e32dac2e",
+    "type": "asset_request",
+    "status": "integrated",
+    "agent": "caesar_agent",
+    "created_at": "2026-06-01T20:55:32Z",
+    "content": {
+      "asset_name": "richmond_evacuation_theater",
+      "scene_description": "A wide Civil War theater image of Confederate columns leaving Richmond as warehouse fires glow behind them, with civilians and government wagons moving through smoky roads.",
+      "historical_period": "April 1865",
+      "style": "period-art",
+      "proposed_roles": [
+        "theater",
+        "chronicle"
+      ],
+      "best_for_scenarios": [
+        "richmond_evacuation"
+      ],
+      "reference_url": "https://www.nps.gov/rich/learn/historyculture/the-fall-of-richmond.htm",
+      "provenance_intent": "Generated art request; must be labeled generated and reviewed before active use.",
+      "design_notes": "",
+      "rendering": {
+        "preferred_backend": "flux2",
+        "compatible_backends": [
+          "flux2"
+        ],
+        "backend_status": {
+          "flux2": "default-static-art"
+        },
+        "prompt": "Richmond evacuation April 1865, Confederate columns withdrawing at night, warehouse fires in the distance, government wagons, civilians on smoky roads, historically accurate 1860s uniforms, period lithograph style, dramatic wide 16:9 composition, no modern objects, no text, no watermark.",
+        "negative_prompt": "",
+        "aspect_ratio": "16:9"
+      }
+    },
+    "validation_errors": [],
+    "is_valid": true,
+    "comments": [],
+    "submitted_at": "2026-06-01T20:55:32Z",
+    "review_note": "Integrated into the current playable build or media catalog.",
+    "approved_at": "2026-06-02T11:21:46Z",
+    "integrated_at": "2026-06-02T11:21:46Z"
+  },
+  {
+    "proposal_id": "atlanta_campaign_1864_7f5bcbe1",
+    "type": "scenario_stage",
+    "status": "integrated",
+    "agent": "caesar_agent",
+    "created_at": "2026-06-02T22:37:21Z",
+    "content": {
+      "scenario_id": "atlanta_campaign_1864",
+      "turn": 26,
+      "date": "May 1, 1864",
+      "actor": "General William Tecumseh Sherman",
+      "roleLabel": "Union Commander, Military Division of Mississippi",
+      "title": "The Atlanta Campaign — Total War Unleashed",
+      "description": "The Confederate Army of Tennessee under Johnston blocks the direct route to Atlanta. Your three armies must maneuver through Georgia's difficult terrain. Atlanta's fall would cripple the Confederacy. Johnston is a mastermind at defensive positioning.",
+      "letterTarget": "General Grant",
+      "choices": [
+        {
+          "id": "direct_assault",
+          "text": "Push directly toward Atlanta despite defensive strength.",
+          "proposer": "hotspur",
+          "costDescription": "Heavy casualties, extended campaign",
+          "consequence": "Your armies press forward through difficult terrain. Losses mount as Johnston retreats, then stands, then retreats again. Atlanta falls after intensive fighting but your army is bloodied.",
+          "effects": {
+            "metrics": {
+              "militaryStrength": -35
+            },
+            "shards": {
+              "hotspur": 35
+            }
+          }
+        },
+        {
+          "id": "flanking_maneuver",
+          "text": "Use superior numbers to flank enemy positions repeatedly.",
+          "proposer": "fox",
+          "costDescription": "Extended timeline, supply line vulnerability",
+          "consequence": "Your superior three-to-one advantage allows repeated flanking movements. Johnston retreats toward Atlanta. After five months of maneuvering, the city falls relatively intact.",
+          "effects": {
+            "metrics": {
+              "militaryStrength": -15
+            },
+            "shards": {
+              "fox": 40,
+              "hotspur": 10
+            }
+          }
+        }
+      ]
+    },
+    "validation_errors": [],
+    "is_valid": true,
+    "comments": [
+      "Integrated after campaign-level rewrite."
+    ],
+    "submitted_at": "2026-06-02T22:37:21Z",
+    "review_note": "Concept integrated after rewrite as atlanta_election_pressure. The raw agent draft was not used verbatim; the final scenario now fits the campaign chronology and 1864 political pressure model.",
+    "integrated_at": "2026-06-02T22:50:52.052Z"
+  }
+]

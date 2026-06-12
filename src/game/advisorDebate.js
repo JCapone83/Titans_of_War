@@ -63,6 +63,9 @@ function describeExpectedEffects(choice) {
   if (metrics.treasury) {
     fragments.push(`treasury ${metrics.treasury >= 0 ? '+' : ''}${Math.round(metrics.treasury)}`);
   }
+  if (metrics.foodSupply) {
+    fragments.push(`food ${metrics.foodSupply >= 0 ? '+' : ''}${Math.round(metrics.foodSupply)}`);
+  }
   if (metrics.publicMorale) {
     fragments.push(`morale ${metrics.publicMorale >= 0 ? '+' : ''}${Math.round(metrics.publicMorale)}`);
   }
@@ -114,7 +117,7 @@ function crisisLine(faction, scenario, crisisSummary) {
   }
 
   if (crisisSummary.faced > 0) {
-    return `The cabinet has already faced ${crisisSummary.faced} crisis${crisisSummary.faced === 1 ? '' : 'es'} this campaign.`;
+    return `The cabinet has already faced ${crisisSummary.faced === 1 ? '1 crisis' : `${crisisSummary.faced} crises`} this campaign.`;
   }
 
   return '';
@@ -131,6 +134,7 @@ function scoreChoiceForFaction(faction, choice, state, scenario) {
 
   if (faction === 'hotspur') {
     score += (metrics.publicMorale || 0) * 2.2;
+    score += (metrics.foodSupply || 0) * 1.2;
     score += (metrics.divergenceIndex || 0) * 120;
     score += (shards.hotspur || 0) * 1.3;
     score -= Math.max(0, -(metrics.militaryStrength || 0)) * 0.45;
@@ -140,12 +144,14 @@ function scoreChoiceForFaction(faction, choice, state, scenario) {
     score += (metrics.militaryStrength || 0) * 2.0;
     score += (metrics.munitions || 0) * 2.0;
     score += (metrics.treasury || 0) * 1.5;
+    score += (metrics.foodSupply || 0) * 1.8;
     score -= Math.max(0, metrics.divergenceIndex || 0) * 100;
     score += (shards.fox || 0) * 1.2;
   }
 
   if (faction === 'wolf') {
     score += (metrics.treasury || 0) * 2.0;
+    score += (metrics.foodSupply || 0) * 1.0;
     score += (metrics.publicMorale || 0) * 1.1;
     score += (metrics.divergenceIndex || 0) * 80;
     score += (shards.wolf || 0) * 1.8;

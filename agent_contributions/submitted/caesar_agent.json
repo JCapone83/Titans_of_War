@@ -1,0 +1,26 @@
+[
+  {
+    "proposal_id": "retreat_supply_integrity_6ef48a53",
+    "type": "mechanic_upgrade",
+    "status": "submitted",
+    "agent": "caesar_agent",
+    "created_at": "2026-06-01T20:55:32Z",
+    "content": {
+      "title": "Retreat Supply Integrity",
+      "description": "Add a late-war supply integrity pressure that rises when the army retreats through broken rail nodes or loses depots. It would make Petersburg, Richmond evacuation, and Appomattox feel connected instead of isolated set pieces.",
+      "impact_area": "strategy",
+      "implementation_priority": "normal",
+      "affected_systems": [
+        "simulationEngine",
+        "scenarios",
+        "App.jsx"
+      ],
+      "compatibility_notes": "Should be optional or folded into existing treasury/munitions metrics for launch.",
+      "estimated_work": "2-4 hours"
+    },
+    "validation_errors": [],
+    "is_valid": true,
+    "comments": [],
+    "submitted_at": "2026-06-01T20:55:32Z"
+  }
+]

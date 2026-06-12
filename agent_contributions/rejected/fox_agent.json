@@ -1,0 +1,60 @@
+[
+  {
+    "proposal_id": "city_point_peace_1864_90d2d3fe",
+    "type": "scenario_stage",
+    "status": "rejected",
+    "agent": "fox_agent",
+    "created_at": "2026-06-02T22:37:21Z",
+    "content": {
+      "scenario_id": "city_point_peace_1864",
+      "turn": 28,
+      "date": "February 3, 1865",
+      "actor": "President Abraham Lincoln",
+      "roleLabel": "Union President, in Peace Negotiations",
+      "title": "The Path to Peace — Negotiations at City Point",
+      "description": "On a riverboat near Petersburg, Lincoln and Confederate Vice President Stephens meet to discuss peace. The war is winding down. Lincoln desires rapid reunion with minimal punishment.",
+      "letterTarget": "The American People",
+      "choices": [
+        {
+          "id": "generous_peace",
+          "text": "Offer generous reunion terms: quick readmission, limited punishment.",
+          "proposer": "fox",
+          "costDescription": "Satisfies few Republicans; risks political backlash",
+          "consequence": "Lincoln offers generous terms. The Confederacy hesitates. Radical Republicans explode in protest. The moment passes. Fighting continues. Lee refuses surrender on moderate terms.",
+          "effects": {
+            "metrics": {
+              "publicMorale": -30
+            },
+            "shards": {
+              "fox": 35,
+              "hotspur": -25
+            }
+          }
+        },
+        {
+          "id": "punitive_peace",
+          "text": "Demand unconditional surrender with Reconstruction terms.",
+          "proposer": "hotspur",
+          "costDescription": "Prolongs fighting, increases casualties",
+          "consequence": "You demand unconditional surrender. The Confederacy refuses. Lee marches toward Appomattox. Three weeks of desperate retreat follow. Lee surrenders when escape becomes impossible.",
+          "effects": {
+            "metrics": {
+              "publicMorale": 40
+            },
+            "shards": {
+              "hotspur": 50
+            }
+          }
+        }
+      ]
+    },
+    "validation_errors": [],
+    "is_valid": true,
+    "comments": [
+      "Reviewed and declined for mainline integration."
+    ],
+    "submitted_at": "2026-06-02T22:37:21Z",
+    "review_note": "Rejected because the current Appomattox / Greensboro ending model is historically stronger and this draft duplicated the peace-ending slot with weaker causal logic.",
+    "rejected_at": "2026-06-02T22:50:52.052Z"
+  }
+]

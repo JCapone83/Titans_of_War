@@ -1,3 +1,35 @@
+@font-face {
+  font-family: 'Outfit';
+  src: url('/fonts/outfit-400.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Outfit';
+  src: url('/fonts/outfit-600.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Outfit';
+  src: url('/fonts/outfit-800.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Share Tech Mono';
+  src: url('/fonts/share-tech-mono-400.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
 :root {
   --bg-dark: #090c10;
   --bg-card: #11161d;
@@ -64,6 +96,7 @@ body::before {
   display: flex;
   flex-direction: column;
   padding: 1.5rem;
+  min-width: 0;
 }
 
 /* Header Styling */
@@ -112,11 +145,71 @@ body::before {
   grid-template-columns: 320px 1fr 340px;
   gap: 1.5rem;
   flex-grow: 1;
+  min-width: 0;
+}
+
+.game-layout > section,
+.tactical-card {
+  min-width: 0;
 }
 
 @media (max-width: 1024px) {
   .game-layout {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .app-container {
+    padding: 0.75rem;
+  }
+
+  .game-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+    padding: 0.85rem;
+  }
+
+  .game-header > div:last-child {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .brand-section h1 {
+    font-size: 1.3rem;
+  }
+
+  .brand-section p {
+    letter-spacing: 2px;
+  }
+
+  .tactical-card {
+    padding: 0.9rem;
+  }
+
+  .campaign-report-card {
+    gap: 1rem !important;
+    padding: 1.25rem 0.85rem !important;
+  }
+
+  .campaign-summary-grid,
+  .campaign-grade-grid,
+  .campaign-share-actions {
+    grid-template-columns: 1fr !important;
+  }
+
+  .campaign-report-actions {
+    display: grid !important;
+    grid-template-columns: 1fr;
+    gap: 0.6rem !important;
+    width: 100%;
+  }
+
+  .campaign-report-actions .tactical-button {
+    min-width: 0;
+    white-space: normal;
   }
 }
 
@@ -213,6 +306,18 @@ body::before {
   border-color: var(--text-primary);
 }
 
+.tactical-button:focus-visible,
+.choice-box:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+[tabindex]:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 3px;
+  box-shadow: 0 0 0 2px var(--accent-gold);
+}
+
 .tactical-button:disabled {
   opacity: 0.4;
   cursor: not-allowed;
@@ -275,6 +380,38 @@ body::before {
   border-color: var(--accent-gold);
   background: rgba(212, 175, 55, 0.05);
   box-shadow: inset 0 0 10px rgba(212, 175, 55, 0.05);
+}
+
+.error-boundary {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 2rem;
+}
+
+.error-boundary-panel {
+  width: min(680px, 100%);
+  border: 1px solid var(--accent-red);
+  background: var(--bg-card);
+  padding: 1.5rem;
+  border-radius: 6px;
+}
+
+.error-boundary-panel h1 {
+  font-size: 1.3rem;
+  margin-bottom: 0.75rem;
+}
+
+.error-boundary-panel p {
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: 1rem;
+}
+
+.error-boundary-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
 }
 
 .choice-title-row {

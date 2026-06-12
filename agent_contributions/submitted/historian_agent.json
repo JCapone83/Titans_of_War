@@ -1,0 +1,34 @@
+[
+	{
+		"proposal_id": "naval_hampton_roads_archive_20260602_001",
+		"type": "asset_request",
+		"status": "submitted",
+		"agent": "historian_agent",
+		"created_at": "2026-06-02T00:10:00Z",
+		"content": {
+			"asset_name": "hampton_roads_ironclads_sidebar",
+			"scene_description": "Supplementary historical artwork showing the Hampton Roads ironclad battle with CSS Virginia, USS Monitor, smoke, sea clutter, and enough visual depth to support chronicle or theater use without replacing the primary asset.",
+			"historical_period": "March 1862",
+			"style": "period-art",
+			"proposed_roles": ["chronicle", "theater"],
+			"best_for_scenarios": ["naval_technology"],
+			"reference_url": "",
+			"provenance_intent": "Manual archive request; use only an exact public-domain or compatible free-culture source with recorded provenance.",
+			"design_notes": "Secondary UI artwork only. Prefer Library of Congress, National Archives, or a clearly sourced public-domain period print. The primary theater image remains the existing Hunley asset.",
+			"rendering": {
+				"preferred_backend": "manual",
+				"compatible_backends": ["manual"],
+				"backend_status": {
+					"manual": "default-human-curated"
+				},
+				"prompt": "Hampton Roads ironclad battle: CSS Virginia engaging Union wooden fleet and USS Monitor in 1862, smoky sea, iron plating, dramatic lighting, historically accurate 19th-century naval lithograph, wide composition, no modern objects, no text, no watermark.",
+				"negative_prompt": "",
+				"aspect_ratio": "16:9"
+			}
+		},
+		"validation_errors": [],
+		"is_valid": true,
+		"comments": ["Quality note: Use for sidebar/secondary content only after exact source and rights verification. Main theater image uses the existing archive asset."],
+		"submitted_at": "2026-06-02T00:10:00Z"
+	}
+]

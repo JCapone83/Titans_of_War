@@ -1,18 +1,19 @@
 {
   "name": "titans-of-war",
-  "version": "0.3.0",
+  "version": "0.3.1",
+  "private": true,
   "description": "A historical educational strategy game about Civil War command decisions, campaign pressure, and alternate-history outcomes.",
   "type": "module",
   "license": "MIT",
   "author": "Titans Forge",
   "repository": {
     "type": "git",
-    "url": "https://github.com/JCapone83/titans-of-war.git"
+    "url": "https://github.com/JCapone83/Titans_of_War.git"
   },
   "bugs": {
-    "url": "https://github.com/JCapone83/titans-of-war/issues"
+    "url": "https://github.com/JCapone83/Titans_of_War/issues"
   },
-  "homepage": "https://github.com/JCapone83/titans-of-war#readme",
+  "homepage": "https://github.com/JCapone83/Titans_of_War#readme",
   "keywords": [
     "strategy-game",
     "history",
@@ -24,16 +25,19 @@
     "node": ">=20",
     "npm": ">=10"
   },
-  "publishConfig": {
-    "access": "public"
-  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "benchmark": "node scripts/benchmark-engine.mjs",
-    "test": "node scripts/smoke-test.mjs && node scripts/validate-content.mjs",
+    "test": "node scripts/smoke-test.mjs && node scripts/validate-content.mjs && npm run validate:agents",
     "validate-assets": "node scripts/validate-assets.mjs",
     "validate": "npm test && npm run validate-assets",
+    "validate:agents": "python3 -m tools.agents.review",
+    "test:agents": "python3 -m pytest tools/agents/tests -q",
+    "agents:review": "python3 -m tools.agents.review",
+    "agents:render": "python3 -m tools.agents.render_manifest",
+    "agents:generate": "python3.11 -m tools.agents.generate_backend",
+    "agents:export": "python3 -m tools.agents.export",
     "download-assets": "node scripts/download-historical-assets.mjs",
     "lint": "node scripts/validate-content.mjs",
     "preview": "vite preview"

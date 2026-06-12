@@ -1,6 +1,8 @@
 # This project is released on GitHub first. Keep accidental npm packages lean.
 dist/
 node_modules/
+models/
+magenta-realtime/
 *.tgz
 *.log
 .DS_Store
@@ -10,6 +12,13 @@ coverage/
 local-saves/
 save-data/
 exports/
+__pycache__/
+**/__pycache__/
+*.pyc
+agent_proposals/
+flux2_art_requests.json
+render_requests/
+generated_audio/
 
 # Internal planning docs are not public package artifacts.
 Titans_of_War_*.md

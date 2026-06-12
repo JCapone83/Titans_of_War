@@ -1,7 +1,8 @@
 import { INITIAL_STATE } from './initialState.js';
 
-export const CAMPAIGN_SAVE_VERSION = 1;
+export const CAMPAIGN_SAVE_VERSION = 2;
 export const CAMPAIGN_STORAGE_KEY = 'titans-of-war:campaign:auto-save';
+const SUPPORTED_SAVE_VERSIONS = new Set([1, CAMPAIGN_SAVE_VERSION]);
 
 function clone(value) {
   return JSON.parse(JSON.stringify(value));
@@ -32,6 +33,7 @@ function isValidState(state) {
     && Number.isFinite(state.metrics.militaryStrength)
     && Number.isFinite(state.metrics.munitions)
     && Number.isFinite(state.metrics.treasury)
+    && Number.isFinite(state.metrics.foodSupply)
     && Number.isFinite(state.metrics.publicMorale)
     && state.shards
     && state.shards.hotspur
@@ -75,17 +77,64 @@ export function createCampaignSnapshot(state, activeScenario, metadata = {}) {
   };
 }
 
-export function restoreCampaignFromSnapshot(snapshot, scenarios = []) {
-  if (!snapshot || snapshot.version !== CAMPAIGN_SAVE_VERSION || !snapshot.state) return null;
+export function getCampaignSnapshotCompatibility(snapshot) {
+  if (!snapshot || typeof snapshot !== 'object') {
+    return { ok: false, reason: 'Save data is missing or is not a campaign snapshot.' };
+  }
+  if (!Number.isInteger(snapshot.version)) {
+    return { ok: false, reason: 'Save data does not identify a supported format version.' };
+  }
+  if (snapshot.version > CAMPAIGN_SAVE_VERSION) {
+    return {
+      ok: false,
+      reason: `Save version ${snapshot.version} was created by a newer Titans of War build. This build supports version ${CAMPAIGN_SAVE_VERSION}.`
+    };
+  }
+  if (!SUPPORTED_SAVE_VERSIONS.has(snapshot.version)) {
+    return {
+      ok: false,
+      reason: `Save version ${snapshot.version} is no longer supported. Supported versions: ${Array.from(SUPPORTED_SAVE_VERSIONS).join(', ')}.`
+    };
+  }
+  if (!snapshot.state || typeof snapshot.state !== 'object') {
+    return { ok: false, reason: 'Save data does not contain a campaign state.' };
+  }
+  return {
+    ok: true,
+    reason: null,
+    migratedFromVersion: snapshot.version < CAMPAIGN_SAVE_VERSION ? snapshot.version : null
+  };
+}
 
-  const state = normalizeState(snapshot.state);
+function migrateCampaignSnapshot(snapshot) {
+  if (snapshot.version === CAMPAIGN_SAVE_VERSION) return snapshot;
+
+  return {
+    ...clone(snapshot),
+    version: CAMPAIGN_SAVE_VERSION,
+    metadata: {
+      engine: 'titans-of-war',
+      mode: 'scripted',
+      selectedModel: null,
+      ...(snapshot.metadata || {}),
+      migratedFromVersion: snapshot.version
+    }
+  };
+}
+
+export function restoreCampaignFromSnapshot(snapshot, scenarios = []) {
+  const compatibility = getCampaignSnapshotCompatibility(snapshot);
+  if (!compatibility.ok) return null;
+  const migratedSnapshot = migrateCampaignSnapshot(snapshot);
+
+  const state = normalizeState(migratedSnapshot.state);
   if (!isValidState(state)) return null;
 
-  const scenarioId = snapshot.activeScenarioId || state.scenarioId || state.nextScenarioId;
+  const scenarioId = migratedSnapshot.activeScenarioId || state.scenarioId || state.nextScenarioId;
   const staticScenario = scenarioId ? scenarios.find((scenario) => scenario.id === scenarioId) : null;
   const turnScenario = scenarios.find((scenario) => scenario.turn === state.currentTurn);
   const activeScenario = staticScenario
-    || (snapshot.activeScenario?.choices ? snapshot.activeScenario : null)
+    || (migratedSnapshot.activeScenario?.choices ? migratedSnapshot.activeScenario : null)
     || turnScenario
     || scenarios[0]
     || null;
@@ -96,7 +145,8 @@ export function restoreCampaignFromSnapshot(snapshot, scenarios = []) {
       scenarioId: activeScenario?.id || state.scenarioId || null,
       nextScenarioId: state.nextScenarioId || null
     },
-    activeScenario
+    activeScenario,
+    migratedFromVersion: compatibility.migratedFromVersion
   };
 }
 
@@ -112,12 +162,27 @@ export function saveCampaignSnapshot(snapshot, storage = getDefaultStorage()) {
 }
 
 export function loadCampaignSnapshot(storage = getDefaultStorage()) {
-  if (!storage) return null;
+  return loadCampaignSnapshotResult(storage).snapshot;
+}
+
+export function loadCampaignSnapshotResult(storage = getDefaultStorage()) {
+  if (!storage) {
+    return {
+      snapshot: null,
+      error: 'Browser storage is unavailable.'
+    };
+  }
 
   try {
     const raw = storage.getItem(CAMPAIGN_STORAGE_KEY);
-    return raw ? JSON.parse(raw) : null;
-  } catch {
-    return null;
+    return {
+      snapshot: raw ? JSON.parse(raw) : null,
+      error: null
+    };
+  } catch (err) {
+    return {
+      snapshot: null,
+      error: `Stored auto-save could not be read: ${err.message}`
+    };
   }
 }

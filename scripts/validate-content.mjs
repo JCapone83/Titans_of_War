@@ -17,7 +17,7 @@ import { createServer } from 'vite';
 
 const VALID_PROPOSERS = new Set(['hotspur', 'fox', 'wolf', 'sovereign']);
 const VALID_METRIC_KEYS = new Set([
-  'militaryStrength', 'munitions', 'treasury', 'publicMorale', 'divergenceIndex',
+  'militaryStrength', 'munitions', 'treasury', 'foodSupply', 'publicMorale', 'divergenceIndex',
 ]);
 const VALID_SHARD_KEYS = new Set(['hotspur', 'fox', 'wolf']);
 const VALID_CROP_MODES = new Set(['wide', 'portrait', 'contain']);
@@ -29,6 +29,24 @@ const VALID_HISTORICAL_MEDIA = new Set(['period-photo', 'period-art', 'modern-ph
 const VALID_ASSET_ROLES = new Set(['theater', 'tactical-underlay', 'card', 'chronicle']);
 const VALID_AUDIO_TYPES = new Set(['music', 'ambient']);
 const VALID_AUDIO_LICENSE_STATUSES = new Set(['verified-public-domain', 'verified-cc0', 'verified-free-license', 'recording-needed']);
+const VALID_SCORE_CARD_KEYS = new Set(['tactical', 'strategic']);
+const PRIMER_REQUIRED_FIELDS = new Set([
+  'id', 'topic', 'summary', 'period_voice', 'power_analysis', 'complexity_note', 'sourceNotes', 'relatedScenarios',
+]);
+const REQUIRED_LATE_WAR_SPINE = new Map([
+  [17, ['new_market']],
+  [18, ['cold_harbor']],
+  [19, ['atlanta_election_pressure']],
+  [20, ['petersburg_siege']],
+  [21, ['fall_of_atlanta']],
+  [22, ['third_winchester']],
+  [23, ['cedar_creek']],
+  [24, ['election_1864_lincoln', 'election_1864_mcclellan']],
+  [25, ['black_confederate_debate']],
+  [26, ['five_forks']],
+  [27, ['richmond_evacuation']],
+  [28, ['appomattox_decision', 'southern_independence_1864', 'greensboro_convention']],
+]);
 
 const MAX_METRIC_DELTA = 85;        // absolute delta cap for non-divergence metrics (end-game scenarios are intentionally extreme)
 const MAX_DIVERGENCE_DELTA = 0.65;  // absolute delta cap for divergenceIndex (Appomattox / Gettysburg can reach 0.6)
@@ -45,11 +63,12 @@ async function loadAuthoringSurface() {
     appType: 'custom',
   });
   try {
-    const [scenarioMod, mediaMod, mapMod, audioMod] = await Promise.all([
+    const [scenarioMod, mediaMod, mapMod, audioMod, primerMod] = await Promise.all([
       viteServer.ssrLoadModule('/src/game/scenarios.js'),
       viteServer.ssrLoadModule('/src/game/mediaCatalog.js'),
       viteServer.ssrLoadModule('/src/game/mapAnnotations.js'),
       viteServer.ssrLoadModule('/src/game/audioCatalog.js'),
+      viteServer.ssrLoadModule('/src/game/historicalPrimers.js'),
     ]);
 
     return {
@@ -62,6 +81,7 @@ async function loadAuthoringSurface() {
       mapInspectorPins: mapMod.MAP_INSPECTOR_PINS || {},
       mapCanvasSize: mapMod.MAP_CANVAS_SIZE || { width: 600, height: 320 },
       audioCatalog: audioMod.AUDIO_TRACK_LIBRARY || [],
+      primerCatalog: primerMod.HISTORICAL_PRIMERS || {},
     };
   } finally {
     await viteServer.close();
@@ -119,6 +139,12 @@ function validateChoice(choice, scenarioPrefix, allIds, errors) {
   if (choice.next && !allIds.has(choice.next)) {
     errors.push(`${prefix}: branch target "${choice.next}" has no matching scenario id`);
   }
+  if (choice.endsCampaign !== undefined && typeof choice.endsCampaign !== 'boolean') {
+    errors.push(`${prefix}: endsCampaign must be a boolean when provided`);
+  }
+  if (choice.endsCampaign && choice.next) {
+    errors.push(`${prefix}: terminal choices must not define a next scenario`);
+  }
 
   if (choice.successRate !== undefined) {
     if (typeof choice.successRate !== 'number' || choice.successRate < 0 || choice.successRate > 1) {
@@ -133,6 +159,36 @@ function validateChoice(choice, scenarioPrefix, allIds, errors) {
   validateEffects(choice.successEffects,  `${prefix} .successEffects`,  errors);
   validateEffects(choice.failureEffects,  `${prefix} .failureEffects`,  errors);
 
+  if (choice.survivalFloor !== undefined) {
+    if (!choice.survivalFloor || typeof choice.survivalFloor !== 'object' || Array.isArray(choice.survivalFloor)) {
+      errors.push(`${prefix}: survivalFloor must be an object of metric minimums`);
+    } else {
+      for (const [key, val] of Object.entries(choice.survivalFloor)) {
+        if (!VALID_METRIC_KEYS.has(key) || key === 'divergenceIndex') {
+          errors.push(`${prefix}: survivalFloor key "${key}" must be a supported non-divergence metric`);
+        }
+        if (typeof val !== 'number' || val < 0 || val > 100) {
+          errors.push(`${prefix}: survivalFloor "${key}" must be a number 0-100, got ${val}`);
+        }
+      }
+    }
+  }
+
+  if (choice.scoreCard !== undefined) {
+    if (!choice.scoreCard || typeof choice.scoreCard !== 'object' || Array.isArray(choice.scoreCard)) {
+      errors.push(`${prefix}: scoreCard must be an object`);
+    } else {
+      for (const [key, val] of Object.entries(choice.scoreCard)) {
+        if (!VALID_SCORE_CARD_KEYS.has(key)) {
+          errors.push(`${prefix}: scoreCard key "${key}" must be tactical or strategic`);
+        }
+        if (typeof val !== 'number' || val < -40 || val > 40) {
+          errors.push(`${prefix}: scoreCard "${key}" must be a number from -40 to 40, got ${val}`);
+        }
+      }
+    }
+  }
+
   if (
     choice.minDivergence !== undefined &&
     choice.maxDivergence !== undefined &&
@@ -144,7 +200,7 @@ function validateChoice(choice, scenarioPrefix, allIds, errors) {
   }
 }
 
-function validateScenario(scenario, allIds, errors) {
+function validateScenario(scenario, allIds, primerCatalog, errors) {
   const prefix = `Scenario "${scenario.id || '(no id)'}"`;
 
   if (!scenario.id)          errors.push(`${prefix}: missing id`);
@@ -153,6 +209,9 @@ function validateScenario(scenario, allIds, errors) {
   if (!scenario.date)        errors.push(`${prefix}: missing date`);
   if (!scenario.actor)       errors.push(`${prefix}: missing actor`);
   if (!scenario.roleLabel)   errors.push(`${prefix}: missing roleLabel`);
+  if (scenario.endsCampaign !== undefined && typeof scenario.endsCampaign !== 'boolean') {
+    errors.push(`${prefix}: endsCampaign must be a boolean when provided`);
+  }
 
   const choices = scenario.choices;
   if (!Array.isArray(choices) || choices.length === 0) {
@@ -181,8 +240,112 @@ function validateScenario(scenario, allIds, errors) {
     }
   }
 
+  if (scenario.electionBranch !== undefined) {
+    const branch = scenario.electionBranch;
+    if (!branch || typeof branch !== 'object' || Array.isArray(branch)) {
+      errors.push(`${prefix}: electionBranch must be an object`);
+    } else {
+      if (typeof branch.threshold !== 'number' || !Number.isFinite(branch.threshold)) {
+        errors.push(`${prefix}: electionBranch.threshold must be a finite number`);
+      }
+      for (const key of ['lincolnScenarioId', 'mcclellanScenarioId']) {
+        if (!branch[key] || typeof branch[key] !== 'string') {
+          errors.push(`${prefix}: electionBranch.${key} must be a scenario id`);
+        } else if (!allIds.has(branch[key])) {
+          errors.push(`${prefix}: electionBranch.${key} "${branch[key]}" has no matching scenario`);
+        }
+      }
+      if (
+        branch.lincolnScenarioId &&
+        branch.mcclellanScenarioId &&
+        branch.lincolnScenarioId === branch.mcclellanScenarioId
+      ) {
+        errors.push(`${prefix}: electionBranch targets must be different scenarios`);
+      }
+    }
+  }
+
   if (scenario.crisisFor && !VALID_SHARD_KEYS.has(scenario.crisisFor)) {
     errors.push(`${prefix}: crisisFor "${scenario.crisisFor}" is not a valid shard key`);
+  }
+
+  if (scenario.primerTags !== undefined) {
+    if (!Array.isArray(scenario.primerTags)) {
+      errors.push(`${prefix}: primerTags must be an array when provided`);
+    } else {
+      const seenPrimerTags = new Set();
+      for (const tag of scenario.primerTags) {
+        if (typeof tag !== 'string') {
+          errors.push(`${prefix}: primerTags entries must be strings`);
+          continue;
+        }
+        if (seenPrimerTags.has(tag)) {
+          errors.push(`${prefix}: duplicate primer tag "${tag}"`);
+        }
+        seenPrimerTags.add(tag);
+        if (!primerCatalog[tag]) {
+          errors.push(`${prefix}: primerTags references unknown primer "${tag}"`);
+        }
+      }
+      if (scenario.primerTags.length > 3) {
+        errors.push(`${prefix}: primerTags should surface at most 3 primers to avoid overloading the turn UI`);
+      }
+    }
+  }
+}
+
+function validateHistoricalPrimers(primerCatalog, allIds, errors) {
+  const seenIds = new Set();
+
+  for (const [key, primer] of Object.entries(primerCatalog)) {
+    const prefix = `Historical primer "${key}"`;
+    if (!primer || typeof primer !== 'object') {
+      errors.push(`${prefix}: must be an object`);
+      continue;
+    }
+
+    for (const field of PRIMER_REQUIRED_FIELDS) {
+      if (!(field in primer)) {
+        errors.push(`${prefix}: missing required field "${field}"`);
+      }
+    }
+
+    if (primer.id !== key) {
+      errors.push(`${prefix}: id "${primer.id}" must match its catalog key`);
+    }
+    if (typeof primer.id === 'string') {
+      if (seenIds.has(primer.id)) {
+        errors.push(`${prefix}: duplicate primer id "${primer.id}"`);
+      }
+      seenIds.add(primer.id);
+      if (!/^[a-z][a-z0-9_]*$/.test(primer.id)) {
+        errors.push(`${prefix}: id must be snake_case`);
+      }
+    }
+
+    const lengthChecks = [
+      ['topic', 12],
+      ['summary', 400],
+      ['period_voice', 60],
+      ['power_analysis', 200],
+      ['complexity_note', 120],
+      ['sourceNotes', 40],
+    ];
+    for (const [field, minLength] of lengthChecks) {
+      if (typeof primer[field] !== 'string' || primer[field].trim().length < minLength) {
+        errors.push(`${prefix}: ${field} should be at least ${minLength} characters`);
+      }
+    }
+
+    if (!Array.isArray(primer.relatedScenarios)) {
+      errors.push(`${prefix}: relatedScenarios must be an array`);
+    } else {
+      for (const scenarioId of primer.relatedScenarios) {
+        if (!allIds.has(scenarioId)) {
+          errors.push(`${prefix}: relatedScenarios references unknown scenario "${scenarioId}"`);
+        }
+      }
+    }
   }
 }
 
@@ -665,6 +828,7 @@ async function main() {
     mapInspectorPins,
     mapCanvasSize,
     audioCatalog,
+    primerCatalog,
   } = authoringSurface;
 
   if (!scenarios.length) {
@@ -687,9 +851,18 @@ async function main() {
   }
 
   const allIds = new Set(scenarios.map((s) => s.id));
-  for (const scenario of scenarios) {
-    validateScenario(scenario, allIds, errors);
+  for (const [turn, requiredIds] of REQUIRED_LATE_WAR_SPINE) {
+    const turnIds = new Set(scenarios.filter((scenario) => scenario.turn === turn).map((scenario) => scenario.id));
+    for (const requiredId of requiredIds) {
+      if (!turnIds.has(requiredId)) {
+        errors.push(`Late-war spine: turn ${turn} must include scenario "${requiredId}"`);
+      }
+    }
   }
+  for (const scenario of scenarios) {
+    validateScenario(scenario, allIds, primerCatalog, errors);
+  }
+  validateHistoricalPrimers(primerCatalog, allIds, errors);
   validateMediaCoverage(scenarios, mediaCatalog, scenarioAssetMap, scenarioMediaOverrides, errors);
   validateMapCoverage(scenarios, mapAnnotations, mapPlateCaptions, mapInspectorPins, mapCanvasSize, errors);
   validateAudioCatalog(audioCatalog, errors);

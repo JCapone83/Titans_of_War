@@ -1,5 +1,7 @@
 # Dependencies and local installs
 node_modules/
+models/
+magenta-realtime/
 
 # Build and package output
 dist/
@@ -14,9 +16,16 @@ yarn-error.log*
 .vite/
 .cache/
 coverage/
+__pycache__/
+*.pyc
 local-saves/
 save-data/
 exports/
+render_requests/
+generated_audio/
+src/game/agentContributedScenarios.js
+agent_proposals/
+flux2_art_requests.json
 
 # OS/editor noise
 .DS_Store
@@ -37,6 +46,7 @@ public/images/cw_pictures/*.png
 !public/images/cw_pictures/map_gettysburg_cemetery_ridge_loc.jpg
 !public/images/cw_pictures/map_petersburg_crater_loc.jpg
 !public/images/cw_pictures/map_appomattox_retreat_lines_loc.jpg
+!public/images/cw_pictures/map_shiloh_buell_loc.jpg
 !public/images/cw_pictures/map_wilderness_russell.jpg
 !public/images/cw_pictures/map_second_manassas_aug30_movements.png
 !public/images/cw_pictures/battlefield start of war.jpg
@@ -53,4 +63,41 @@ public/images/cw_pictures/*.png
 !public/images/cw_pictures/art3.jpg
 !public/images/cw_pictures/art4.jpg
 !public/images/cw_pictures/art5.jpg
+!public/images/cw_pictures/Conrad_Wise_Chapman_-_Submarine_Torpedo_Boat_H.L._Hunley,_Dec._6,_1863_(cropped).jpg
+!public/images/cw_pictures/General Forrest and General Bragg at Chattanooga.jpeg
+!public/images/cw_pictures/General McClellan at Seven Days.jpeg
+!public/images/cw_pictures/Lee and Jackson last meeting.jpeg
+!public/images/cw_pictures/Lee at Fredricksburg.jpeg
+!public/images/cw_pictures/MNBPRickettsBatteryPainting.jpg
+!public/images/cw_pictures/Second slide image after the start of war.jpeg
+!public/images/cw_pictures/Second_Battle_of_Bull_Run_1860s_lithograph_currier_and_ives.jpg
+!public/images/cw_pictures/The Hunley.jpeg
+!public/images/cw_pictures/Thure de Thulstrup - L. Prang and Co. - Battle of Gettysburg - Restoration by Adam Cuerden.jpg
+!public/images/cw_pictures/Virginia debates emancipation for military service .jpeg
+!public/images/cw_pictures/Shiloh AI Gen.jpeg
+!public/images/cw_pictures/battle of petersburg.jpeg
+!public/images/cw_pictures/Appomattox.jpeg
+!public/images/cw_pictures/battle of new market cadets.jpeg
+!public/images/cw_pictures/CSA colored CTs parade in Richmond March 1865.JPG
+!public/images/cw_pictures/VMI cadets New Market Gemini.PNG
+!public/images/cw_pictures/Jackon marches to first Winchester Gemini.PNG
+!public/images/cw_pictures/Antietam Thulstrup, Thure de 1887.png
+!public/images/cw_pictures/Burning of Atlanta.jpeg
+!public/images/cw_pictures/Third Battle of Winchester.jpeg
+!public/images/cw_pictures/Christmas Truce.jpeg
+!public/images/cw_pictures/Grant at Cold Harbor.jpeg
+!public/images/cw_pictures/Grant and Meade updated.jpeg
+!public/images/cw_pictures/Lee before a battle .jpeg
+!public/images/cw_pictures/Davis cabinet.jpeg
+!public/images/cw_pictures/Davis and Lee.jpeg
+!public/images/cw_pictures/Lincoln Cabinet.jpeg
+!public/images/cw_pictures/Richmond burns 1864.jpeg
+!public/images/cw_pictures/Jackson second Manassas.jpeg
+!public/images/cw_pictures/Armistice.jpeg
+!public/images/cw_pictures/CSA Independence.jpeg
+!public/images/cw_pictures/X2.jpeg
+!public/images/cw_pictures/X3.jpeg
+!public/images/cw_pictures/generic battle scene 2.jpeg
+!public/images/cw_pictures/generic battle scene 3.jpeg
+!public/images/cw_pictures/re-enactment2.jpg
 public/audio/dixie_instrumental.mp3

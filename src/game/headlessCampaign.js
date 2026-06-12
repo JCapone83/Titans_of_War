@@ -1,5 +1,5 @@
 import { createFreshCampaignState } from './campaignStorage.js';
-import { calculateCampaignScore, resolveNextScenario, tickMetrics } from './simulationEngine.js';
+import { CAMPAIGN_FINAL_TURN, calculateCampaignScore, resolveNextScenario, tickMetrics } from './simulationEngine.js';
 
 function clone(value) {
   return JSON.parse(JSON.stringify(value));
@@ -51,9 +51,12 @@ export function buildHistoryEntry(state, activeScenario, choice, ticked) {
     scenarioId: activeScenario.id,
     date: activeScenario.date,
     scenarioTitle: activeScenario.title,
+    scenarioRoleLabel: activeScenario.roleLabel,
     choiceId: choice.id,
     choiceText: choice.text,
     choiceProposer: choice.proposer,
+    scoreCard: choice.scoreCard || null,
+    metricEffects: { ...(ticked.appliedEffects?.metrics || {}) },
     choiceSucceeded: ticked.choiceSucceeded,
     consequence: ticked.resolvedConsequence,
     divergence: ticked.divergenceIndex,
@@ -69,6 +72,7 @@ export function buildHistoryEntry(state, activeScenario, choice, ticked) {
 function resolveDirectorRoute(activeScenario, choice, nextScenario, ticked) {
   if (!nextScenario) return 'end-of-campaign';
   if (choice?.next && nextScenario.id === choice.next) return 'choice.next';
+  if (activeScenario?.electionBranch) return `election-result:${nextScenario.id}`;
   if (nextScenario.crisisFor) return `cabinet-crisis:${nextScenario.crisisFor}`;
   if (Array.isArray(activeScenario?.branches)) {
     const matched = activeScenario.branches.find(
@@ -85,23 +89,46 @@ export function advanceCampaignTurn(state, activeScenario, choiceInput, scenario
     throw new Error(`Choice not found for scenario ${activeScenario?.id || 'unknown'}`);
   }
 
-  const ticked = tickMetrics(state, choice, successModifier);
+  const rawTicked = tickMetrics(state, choice, successModifier, {
+    skipTurnDecay: !!activeScenario?.interlude || !!activeScenario?.crisisFor,
+    // Terminal scenarios (Peace Crisis, etc.) end the campaign on any
+    // choice regardless of currentTurn so the player lands cleanly on the
+    // final grade screen rather than being asked for further turns.
+    endsCampaign: !!activeScenario?.endsCampaign || !!choice?.endsCampaign,
+    activeScenarioId: activeScenario?.id || null,
+  });
+  const holdsCampaignTurn = activeScenario?.crisisFor || activeScenario?.interlude;
+  const ticked = holdsCampaignTurn
+    ? {
+      ...rawTicked,
+      currentTurn: state.currentTurn,
+      statusMessage: activeScenario?.interlude && !rawTicked.gameOver
+        ? 'Historical interlude resolved. Returning to the campaign line.'
+        : rawTicked.statusMessage,
+    }
+    : rawTicked;
   const historyEntry = buildHistoryEntry(state, activeScenario, choice, ticked);
-  const nextScenario = resolveNextScenario(
-    activeScenario,
-    choice,
-    ticked.currentTurn,
-    scenarios,
-    ticked.divergenceIndex,
-    ticked.shards
-  );
-  const linearScenario = scenarios.find((scenario) => scenario.turn === ticked.currentTurn) || null;
+  const resolvedHistory = [...(state.history || []), historyEntry];
+  const nextScenario = ticked.gameOver
+    ? null
+    : resolveNextScenario(
+      activeScenario,
+      choice,
+      ticked.currentTurn,
+      scenarios,
+      ticked.divergenceIndex,
+      ticked.shards,
+      resolvedHistory
+    );
+  const linearScenario = ticked.gameOver
+    ? null
+    : scenarios.find((scenario) => scenario.turn === ticked.currentTurn) || null;
   const nextScenarioId = nextScenario && nextScenario.id !== linearScenario?.id
     ? nextScenario.id
     : null;
-  const canonicalNextScenario = nextScenarioId
-    ? nextScenario
-    : (linearScenario || nextScenario || null);
+  const canonicalNextScenario = ticked.gameOver
+    ? null
+    : (nextScenarioId ? nextScenario : (linearScenario || nextScenario || null));
 
   const directorRoute = resolveDirectorRoute(activeScenario, choice, canonicalNextScenario, ticked);
 
@@ -115,7 +142,7 @@ export function advanceCampaignTurn(state, activeScenario, choiceInput, scenario
     divergenceIndex: ticked.divergenceIndex,
     gameOver: ticked.gameOver,
     statusMessage: ticked.statusMessage,
-    history: [...(state.history || []), historyEntry]
+    history: resolvedHistory
   };
 
   return {
@@ -128,7 +155,7 @@ export function advanceCampaignTurn(state, activeScenario, choiceInput, scenario
   };
 }
 
-export function runHeadlessCampaign({ scenarios, initialState = null, chooseChoice = null, maxTurns = 13 }) {
+export function runHeadlessCampaign({ scenarios, initialState = null, chooseChoice = null, maxTurns = CAMPAIGN_FINAL_TURN }) {
   if (!Array.isArray(scenarios) || !scenarios.length) {
     throw new Error('runHeadlessCampaign requires a non-empty scenario array');
   }
@@ -168,7 +195,7 @@ export function runHeadlessCampaign({ scenarios, initialState = null, chooseChoi
   };
 }
 
-export async function runHeadlessCampaignAsync({ scenarios, initialState = null, chooseChoice = null, maxTurns = 13 }) {
+export async function runHeadlessCampaignAsync({ scenarios, initialState = null, chooseChoice = null, maxTurns = CAMPAIGN_FINAL_TURN }) {
   if (!Array.isArray(scenarios) || !scenarios.length) {
     throw new Error('runHeadlessCampaignAsync requires a non-empty scenario array');
   }

@@ -5,7 +5,31 @@ const ENABLED_CAPABILITY_BADGES = [
   'BENCHMARK CHOICES',
 ];
 
+export const RECOMMENDED_LOCAL_MODEL = {
+  displayName: 'Gemma 4 12B-it',
+  huggingFaceId: 'google/gemma-4-12B-it',
+  ollamaTag: 'gemma4:12b-it',
+  role: 'Recommended local model for Titans of War agents and optional in-game local AI.',
+  // Gemma 4 12B-it released only days before this build. The Ollama registry
+  // typically lags upstream releases by several days. Until the tag is live,
+  // the runtime will discover any installed chat model and adapt — Qwen,
+  // Llama, Mistral, or Phi all work as interim contestants.
+  availabilityNote: 'Gemma 4 12B-it is the right recommendation. The official Ollama tag may take a few days to publish after upstream release; until then, use any of the fallback families below.',
+  fallbackFamilies: ['Qwen 7B/14B', 'Llama 8B', 'Mistral 7B', 'Phi on low-memory machines'],
+};
+
 const MODEL_RULES = [
+  {
+    pattern: /(gemma[-_: ]?4.*12b|gemma4.*12b|google\/gemma-4-12b-it)/i,
+    familyLabel: 'Gemma 4 12B-it',
+    knownGoodForTitans: true,
+    recommendedForTitans: true,
+    sortPriority: 130,
+    accentColor: 'var(--accent-gold)',
+    dotColor: '#facc15',
+    statusPrefix: 'Gemma 4 12B recommended model active',
+    supportNote: 'Recommended local model for normal PCs when available through your local runner. Titans uses text + JSON outputs only; vision and image generation are not wired into the product.',
+  },
   {
     pattern: /gemma/i,
     familyLabel: 'Gemma',
@@ -94,11 +118,20 @@ export function resolveModelProfile(modelName) {
     enabledCapabilityBadges: [...ENABLED_CAPABILITY_BADGES],
     limitations: ['NO VISION PIPELINE', 'NO IMAGE PIPELINE'],
     statusLine: `${rule.statusPrefix} — text scenario generation, structured JSON drafting, letter classification, and benchmark decision selection are available.`,
-    supportNote: 'Titans currently calls Ollama through text + JSON outputs only; vision and image generation are not wired into the product yet.',
+    supportNote: rule.supportNote || 'Titans currently calls Ollama through text + JSON outputs only; vision and image generation are not wired into the product yet.',
+    recommendedForTitans: Boolean(rule.recommendedForTitans),
+    recommendationLabel: rule.recommendedForTitans
+      ? 'RECOMMENDED LOCAL MODEL'
+      : rule.knownGoodForTitans
+        ? 'SUPPORTED LOCAL MODEL'
+        : 'UNTESTED LOCAL MODEL',
   };
 }
 
 export function compareModelProfiles(left, right) {
+  if (left.recommendedForTitans !== right.recommendedForTitans) {
+    return left.recommendedForTitans ? -1 : 1;
+  }
   if (left.knownGoodForTitans !== right.knownGoodForTitans) {
     return left.knownGoodForTitans ? -1 : 1;
   }

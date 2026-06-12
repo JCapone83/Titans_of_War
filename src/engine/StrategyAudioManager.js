@@ -2,8 +2,8 @@
  * Titans of War — Strategy Audio Manager
  *
  * Implements a dual-layer audio engine for the immersive war cabinet.
- * 1. Primary: HTML5 Audio Player pointing to public domain recordings in /audio/.
- * 2. Fallback: Native Web Audio Procedural Synthesizer. If files are not present in the public folder,
+ * 1. Primary: HTML5 Audio Player pointing to historical archive recordings in /audio/.
+ * 2. Fallback: Native Web Audio procedural synthesizer. If files are not present in the public folder,
  *    the engine procedurally synthesizes:
  *      - An ambient, crackling campfire loop (white noise bursts + bandpass filters).
  *      - Haunting solo fife/trumpet instrumentals of "Lorena" or "Battle Cry of Freedom".
@@ -120,7 +120,7 @@ export class StrategyAudioManager {
     // Track references
     this.musicTrack = null;
     this.ambientCampfire = null;
-    this.useProcedural = true;
+    this.useProcedural = false;
     this.hasFileLibrary = false;
     this.availableFileTracks = [];
     this.availableFileTrackMap = new Map();
@@ -481,7 +481,7 @@ export class StrategyAudioManager {
 
     if (!this.hasFileLibrary) {
       this.useProcedural = true;
-      console.log('[Strategy Audio] No local recordings detected in /audio. Using public-domain procedural score.');
+      console.log('[Strategy Audio] No verified archive recordings detected in /audio. Using procedural fallback.');
     } else if (import.meta.env.PROD) {
       const excluded = FILE_TRACK_LIBRARY.filter((track) => track.licenseStatus === 'recording-needed');
       if (excluded.length) {
@@ -710,7 +710,7 @@ export class StrategyAudioManager {
 
   async fallbackToProcedural(gameState, reason) {
     if (reason) {
-      console.warn(`[Strategy Audio] ${reason}. Falling back to procedural score.`);
+      console.warn(`[Strategy Audio] ${reason}. Falling back to procedural music.`);
     }
 
     this.clearFileCrossfade();
@@ -796,7 +796,7 @@ export class StrategyAudioManager {
           return;
         }
       }
-      this.currentTrackTitle = `${targetTrack.title} (Local Archive)`;
+      this.currentTrackTitle = `${targetTrack.title} (Historical Recording)`;
       this.currentSourceMode = 'file';
       this.currentTrackMeta = targetTrack;
       this.emitStatus();
@@ -829,7 +829,7 @@ export class StrategyAudioManager {
 
     this.musicTrack = nextTrack;
     this.crossfadeFileTracks(nextTrack, previousTrack);
-    this.currentTrackTitle = `${targetTrack.title} (Local Archive)`;
+    this.currentTrackTitle = `${targetTrack.title} (Historical Recording)`;
     this.currentSourceMode = 'file';
     this.currentTrackMeta = targetTrack;
     this.emitStatus();
@@ -900,7 +900,7 @@ export class StrategyAudioManager {
 
     this.stopProceduralMelody();
     this.startProceduralMelodySequence(MELODIES[targetMelody]);
-    this.currentTrackTitle = `${PROCEDURAL_TRACK_INFO[targetMelody]?.title || targetMelody} (Procedural Archive)`;
+    this.currentTrackTitle = `${PROCEDURAL_TRACK_INFO[targetMelody]?.title || targetMelody} (Synthesized Fallback)`;
     this.currentSourceMode = 'procedural';
     this.currentTrackMeta = null;
     this.emitStatus();

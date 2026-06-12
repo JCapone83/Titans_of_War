@@ -1,0 +1,179 @@
+[
+  {
+    "proposal_id": "soldier_letter_gettysburg_1863_75a8dc1f",
+    "type": "scenario_stage",
+    "status": "rejected",
+    "agent": "nemo_agent",
+    "created_at": "2026-06-02T22:36:56Z",
+    "content": {
+      "scenario_id": "soldier_letter_gettysburg_1863",
+      "turn": 23,
+      "date": "July 1, 1863",
+      "actor": "Lieutenant James Carroll",
+      "roleLabel": "Union Officer, 2nd Massachusetts Infantry",
+      "title": "The Last Letter Home — Gettysburg's First Day",
+      "description": "Your regiment marches into Gettysburg on a hot Pennsylvania afternoon. Cannon fire echoes across the ridge. You have time to write one letter before the assault begins.",
+      "letterTarget": "Your wife Eleanor",
+      "choices": [
+        {
+          "id": "honest_letter",
+          "text": "Write honestly about fears and doubts. Tell her the truth.",
+          "proposer": "fox",
+          "costDescription": "Emotional burden, legacy of worry",
+          "consequence": "You spill your honest feelings onto paper. Fear mingles with duty. You tell Eleanor you may not come home. The letter is discovered on your body after the battle. Eleanor grieves both your death and your premonition.",
+          "effects": {
+            "metrics": {
+              "publicMorale": -10
+            },
+            "shards": {
+              "fox": 35,
+              "hotspur": -15
+            }
+          }
+        },
+        {
+          "id": "brave_letter",
+          "text": "Write with confidence and hope. Assure her of victory.",
+          "proposer": "hotspur",
+          "costDescription": "May feel false, but preserves her peace",
+          "consequence": "You write boldly of Union victory and swift return home. The letter arrives after news of your death. Eleanor reads your optimistic words as a final gift. Your brave words become your legacy.",
+          "effects": {
+            "metrics": {
+              "publicMorale": 20
+            },
+            "shards": {
+              "hotspur": 40,
+              "fox": -10
+            }
+          }
+        }
+      ]
+    },
+    "validation_errors": [],
+    "is_valid": true,
+    "comments": [
+      "Narrative value recognized, but not suitable for the main campaign spine."
+    ],
+    "submitted_at": "2026-06-02T22:36:56Z",
+    "review_note": "Rejected as a mainline scenario. This is better treated as chronicle, letter, or vignette material than as a core strategic campaign turn.",
+    "rejected_at": "2026-06-02T22:50:52.052Z"
+  },
+  {
+    "proposal_id": "usct_emancipation_1863_209bed16",
+    "type": "scenario_stage",
+    "status": "rejected",
+    "agent": "nemo_agent",
+    "created_at": "2026-06-02T22:36:56Z",
+    "content": {
+      "scenario_id": "usct_emancipation_1863",
+      "turn": 18,
+      "date": "June 1, 1863",
+      "actor": "Colonel James C. Freeman",
+      "roleLabel": "Commander, 54th Massachusetts (Colored) Regiment",
+      "title": "The Weight of Freedom — A Soldier's Choice",
+      "description": "You are a free Black man commanding the first official all-Black regiment. Your men are eager to prove themselves. But you know capture means enslavement or execution under Confederate law.",
+      "letterTarget": "Frederick Douglass",
+      "choices": [
+        {
+          "id": "aggressive_combat",
+          "text": "Lead from the front. Show the nation Black soldiers are equal.",
+          "proposer": "hotspur",
+          "costDescription": "High casualty risk, potential capture danger",
+          "consequence": "The 54th leads the assault on Fort Wagner. Your soldiers storm the parapet in fierce fire. Half your regiment falls. The nation witnesses Black valor. The victory is bittersweet, purchased in blood.",
+          "effects": {
+            "metrics": {
+              "publicMorale": 30
+            },
+            "shards": {
+              "hotspur": 50,
+              "wolf": 35
+            }
+          }
+        },
+        {
+          "id": "measured_approach",
+          "text": "Carefully build the regiment's reputation with safer operations.",
+          "proposer": "fox",
+          "costDescription": "Slower progress, may face accusations of timidity",
+          "consequence": "You lead the 54th in smaller operations. Each victory is real but less dramatic. The regiment's reputation builds slowly. By war's end, the 54th is renowned but less celebrated than they might have been.",
+          "effects": {
+            "metrics": {
+              "publicMorale": 15
+            },
+            "shards": {
+              "fox": 45,
+              "hotspur": -10
+            }
+          }
+        }
+      ]
+    },
+    "validation_errors": [],
+    "is_valid": true,
+    "comments": [
+      "Narrative value recognized, but not suitable for the main campaign spine."
+    ],
+    "submitted_at": "2026-06-02T22:36:56Z",
+    "review_note": "Rejected as a mainline scenario. This is better treated as chronicle, letter, or vignette material than as a core strategic campaign turn.",
+    "rejected_at": "2026-06-02T22:50:52.052Z"
+  },
+  {
+    "proposal_id": "widow_home_front_1864_02a69a3e",
+    "type": "scenario_stage",
+    "status": "rejected",
+    "agent": "nemo_agent",
+    "created_at": "2026-06-02T22:36:56Z",
+    "content": {
+      "scenario_id": "widow_home_front_1864",
+      "turn": 28,
+      "date": "August 1, 1864",
+      "actor": "Margaret Hayes",
+      "roleLabel": "Widow, Shenandoah Valley Farmer",
+      "title": "The Home Front — War's Civilian Toll",
+      "description": "Your husband died at Shiloh three years ago. Now you manage his farm while feeding four children. Both armies demand supplies. Confederate raiders threaten your livestock.",
+      "letterTarget": "Your sister in Boston",
+      "choices": [
+        {
+          "id": "union_cooperation",
+          "text": "Supply the Union Army. They offer some protection and payment.",
+          "proposer": "hotspur",
+          "costDescription": "Confederate retribution, loss of income from South",
+          "consequence": "You contract with Union quartermasters. Your farm supplies the Army. Payments come regularly. But Confederate cavalry raids your farm three times. Each raid steals livestock. Your children live in fear.",
+          "effects": {
+            "metrics": {
+              "publicMorale": 20
+            },
+            "shards": {
+              "hotspur": 40,
+              "fox": -15
+            }
+          }
+        },
+        {
+          "id": "careful_neutrality",
+          "text": "Give minimal supplies to both sides. Try to survive.",
+          "proposer": "fox",
+          "costDescription": "Both armies may see you as obstruction; no protection",
+          "consequence": "You attempt strict neutrality, trading small amounts with both sides. Union quartermasters grow frustrated. Confederate cavalry still raids. You receive protection from neither. Your family survives by avoiding visibility.",
+          "effects": {
+            "metrics": {
+              "publicMorale": -15
+            },
+            "shards": {
+              "fox": 35,
+              "hotspur": -20
+            }
+          }
+        }
+      ]
+    },
+    "validation_errors": [],
+    "is_valid": true,
+    "comments": [
+      "Narrative value recognized, but not suitable for the main campaign spine."
+    ],
+    "submitted_at": "2026-06-02T22:36:56Z",
+    "review_note": "Rejected as a mainline scenario. This is better treated as chronicle, letter, or vignette material than as a core strategic campaign turn.",
+    "rejected_at": "2026-06-02T22:50:52.052Z"
+  }
+]

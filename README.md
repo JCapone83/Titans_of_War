@@ -1,8 +1,12 @@
 # Titans of War
 
-Titans of War is a historical educational strategy game about Civil War command decisions, logistics, morale, cabinet pressure, and alternate-history campaign outcomes.
+Titans of War is an open-source historical strategy prototype from Titans Forge. It turns Civil War command decisions into a playable pressure system: logistics, food, morale, cabinet politics, military strength, and alternate-history divergence all compound across a campaign.
 
-The game is local-first. It runs in scripted deterministic mode without any AI service, and it can optionally use a local Ollama model as a decision/generation layer when one is available.
+The game is local-first. It runs in scripted deterministic mode without any AI service, and it can optionally use a local Ollama model as a decision/generation layer when one is available. The project is educational; it is not an endorsement of any historical faction or ideology.
+
+## Why Titans Forge Built It
+
+Titans of War is both a game and a public proof artifact for Titans Forge. The goal is to show how a strategy engine can make messy historical tradeoffs legible: every decision changes resources, faction trust, morale, divergence, and the final campaign ending.
 
 ## Basic Facts
 
@@ -19,8 +23,11 @@ The game is local-first. It runs in scripted deterministic mode without any AI s
 
 - Authored campaign scenarios with deterministic fallback play
 - Seeded simulation runs for reproducible outcomes
-- Strategic Stability Index scoring at campaign end
+- Three-part campaign report card at campaign end
 - Cabinet, morale, munitions, treasury, and military-pressure mechanics
+- Food supply and late-war endurance pressure
+- Guided walkthrough and campaign progress tracking
+- Share-card export for posting campaign results
 - Campaign auto-save plus JSON import/export
 - Markdown chronicle export
 - Headless benchmark CLI for strategy-policy comparisons
@@ -31,6 +38,7 @@ The game is local-first. It runs in scripted deterministic mode without any AI s
 - Node.js 20+
 - npm 10+
 - Optional: Ollama on `http://localhost:11434`
+- Optional local model: Gemma 4 12B-it is the recommended agent model when available through your local runner
 
 ## Quick Start
 
@@ -40,6 +48,8 @@ npm run dev
 ```
 
 Open the local Vite URL shown in the terminal.
+
+For recording or quick review, use `LOAD HEADLINE DEMO` in the Campaign Archive panel. It opens at Cedar Creek with a curated alternate-history record. A strong result reaches the McClellan election, where the player can conclude the run through a proposed Concurrent Majority settlement.
 
 Run checks:
 
@@ -65,6 +75,46 @@ npm run benchmark -- --models installed --seeds 1861,1862
 
 Titans of War does not need a model to run. If Ollama is installed, the in-app local AI portal can discover installed chat models and use one for scenario generation or decision selection. If Ollama is unavailable, the game reports that clearly and continues with scripted campaign logic.
 
+When the local AI portal is engaged, the authored Civil War spine still runs whenever a scenario exists for the current turn. Procedural generation is reserved for the explicit "free play" mode and for campaign continuations past the authored catalog. This preserves curated content as the default experience.
+
+Recommended local model: Gemma 4 12B-it. It is the preferred option for Titans Forge agent contributions, benchmark decision selection, and optional in-game local generation because it should fit ordinary enthusiast PCs better than very large frontier-style local models while still giving stronger reasoning than small fallback models. See `docs/local-models.md`.
+
+> **Note on availability.** Gemma 4 12B-it released only a few days before this build. The Ollama registry typically takes several days to publish a new family. Until the official `gemma4:12b-it` tag is live, players who want to try the local-AI path can run one of the fallback families below; the engine discovers any installed chat model at runtime and adapts.
+
+Other workable choices:
+
+- Qwen 7B/14B for strong structured JSON and scenario drafting
+- Llama 8B-class models for broad local compatibility
+- Mistral 7B for fast text generation on modest hardware
+- Phi-class models for low-memory machines
+
+Local AI is optional. The public game, scripted scenarios, campaign scoring, walkthrough, exports, and benchmark policies all work without a model.
+
+## Campaign Report Card
+
+Every campaign closes with three A-F grades plus a transparent 0-1000 composite score so human runs and headless model-tournament runs are directly comparable. The score is computed by `calculateCampaignScore` in `src/game/simulationEngine.js`.
+
+| Component | Cap | What it measures |
+| :--- | ---: | :--- |
+| Tactical Smarts | 350 | Whether battlefield decisions were sound: preserving armies, choosing defensible ground, avoiding reckless assaults, and making correct operational calls such as holding Lee back at the Wilderness. |
+| Strategic Brilliance | 400 | Whether political, logistical, diplomatic, food, treasury, and cabinet decisions strengthened long-run survival rather than chasing short-term drama. |
+| Timeline Fidelity | 250 | How closely the campaign stayed to the historical timeline. High divergence no longer ends the game by itself; it lowers this grade. |
+
+Each report-card component receives its own A-F grade: `A` >= 90, `B` >= 80, `C` >= 70, `D` >= 60, otherwise `F`. The composite score also receives an A-F grade: `A` >= 900, `B` >= 800, `C` >= 700, `D` >= 600, otherwise `F`.
+
+Example: a campaign might earn `Tactical Smarts: B`, `Strategic Brilliance: A`, and `Timeline Fidelity: D` if the player made excellent field and political decisions while pushing the war far outside the original chronology.
+
+## Win Conditions
+
+The campaign has several ending families. This section contains light mechanical spoilers.
+
+- **Historical defeat and reunion:** Most campaigns reach Richmond, Appomattox, or Greensboro. The final result depends on army strength, food, morale, divergence, and the settlement selected.
+- **McClellan settlement:** Keeping Joseph E. Johnston in command long enough to delay Atlanta, then producing enough military and political pressure in the Valley, can elect McClellan. He still requires reunion. Accepting the Concurrent Majority proposal ends the scripted campaign with McClellan promising to submit the amendment to Congress and the states, not guaranteeing ratification.
+- **Gettysburg recognition:** Albert Sidney Johnston must survive Shiloh, Jackson must survive Chancellorsville, and Jackson's immediate assault at Gettysburg must succeed. Britain and France then offer recognition and mediation. The player may accept the armistice and end with recognized independence or continue fighting for stronger terms.
+- **Late full independence:** Players who continue after recognition must preserve the rare military chain, win the McClellan election without accepting reunion, and reach the final peace crisis at very high divergence. Full independence remains the hardest ending.
+
+Reaching `100%` divergence does not automatically end the game. It records a fully severed timeline and lowers the Timeline Fidelity grade.
+
 ## Media Policy
 
 The source code is MIT licensed. Historical images, audio recordings, and other media keep their own rights status.
@@ -76,9 +126,25 @@ Verified public-domain or permissively licensed assets are documented in:
 - `src/game/historicalAssetManifest.js`
 - `docs/media-sourcing.md`
 - `docs/historical_assets_curation.md`
+- `MEDIA_RIGHTS.md`
 - `NOTICE`
 
 Assets marked `needs-review` or `recording-needed` are not public release assets. They are placeholders or sourcing targets until provenance is resolved.
+
+Project-authored photographs and project-created images are offered under CC BY 4.0 to the extent transferable rights exist. Public-release AI images were created with OpenAI, xAI, or Google tools. Experimental local FLUX.2 Klein outputs are excluded from the repository and release build. See `MEDIA_RIGHTS.md` and `NOTICE`; third-party historical media retains the rights status recorded in its catalog entry.
+
+## Sharing Results
+
+Campaign-end reports include a `Titans Forge Share Card` export with:
+
+- outcome and ending class
+- report-card grades and composite score
+- divergence percentage
+- final resource state
+- recent decisions
+- reproducible campaign seed
+
+The share card is intended for X, LinkedIn, Discord, screenshots, and beta feedback threads.
 
 ## Project Structure
 

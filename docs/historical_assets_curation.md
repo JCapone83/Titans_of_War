@@ -6,13 +6,21 @@ This document records the current curated direction for Titans of War media. The
 
 | Track | Target File | Use | Source | Rights |
 | --- | --- | --- | --- | --- |
-| Lorena | `public/audio/lorena_instrumental.mp3` | Low-morale and home-front turns | North Atlantic Tune List | Site states content is not copyrighted; attribution preferred |
+| Lorena | `public/audio/lorena_instrumental.mp3` | Low-morale and home-front turns | Library of Congress / Citizen DJ / American Folklife Center | Free to use and reuse; shipped as a trimmed performance-only extract |
+| Shenandoah | `public/audio/shenandoah.mp3` | Letter, home-front, and quiet turns | Wikimedia Commons / U.S. Air Force Band | Public Domain |
 | Battle Cry of Freedom | `public/audio/battle_cry_brass.mp3` | High-morale maneuvers | Library of Congress National Jukebox / Victor Military Band | Public Domain in the United States |
 | When Johnny Comes Marching Home | `public/audio/fife_drum_march.mp3` | Standard tactical turns | Wikimedia Commons / West Point Band | Public Domain in the United States |
 | Campfire Ambience | `public/audio/ambient_campfire.mp3` | Letter and quiet-command phases | Wikimedia Commons / PDSounds | Public Domain dedication |
 | Taps (Appomattox Elegy) | `public/audio/elegy_final.mp3` | Concluding turns | Wikimedia Commons / U.S. Army Band | Public Domain in the United States |
+| Battle Hymn of the Republic | `public/audio/battle_hymn_triumphant.mp3` | Union pressure and high morale | Wikimedia Commons / Library of Congress | Public Domain |
+| The Yellow Rose of Texas | `public/audio/yellow_rose_march.mp3` | Movement and Southern camp cues | Wikimedia Commons | Public Domain |
+| Tenting Tonight | `public/audio/tenting_tonight.mp3` | Winter camps and low morale | Wikimedia Commons | Public Domain |
+| Just Before the Battle, Mother | `public/audio/just_before_battle_mother.mp3` | Letters and battle-eve cues | Library of Congress / Internet Archive file | Public Domain |
 
-Important rule: the composition and the recording are separate rights. Keep catalog entries marked pending until the actual recording source URL and license have been audited.
+Important rule: the composition and the recording are separate rights. Each
+shipped recording has an audited source and SHA-256 hash in
+`src/game/historicalAssetManifest.js`. Keep other entries pending until the
+actual recording, not merely the composition, has been audited.
 
 ## Cartographic Targets
 
@@ -30,7 +38,10 @@ Important rule: the composition and the recording are separate rights. Keep cata
 | Petersburg | `map_petersburg_crater_loc.jpg` | Siege trenches and Crater detonation coordinates | Verified |
 | Appomattox / Greensboro ending | `map_appomattox_retreat_lines_loc.jpg` | Lee retreat lines to Appomattox Station | Verified |
 
-`map_virginia_campaigns_reference.jpeg` is retained as a broad Virginia campaign reference map from an on-site battlefield interpretive display, but is not currently assigned to a scenario tactical view.
+The unresolved local map candidates and
+`map_virginia_campaigns_reference.jpeg` remain local-only and are ignored by
+git. The game uses a procedural tactical layer when a scenario's candidate map
+is marked `needs-review`.
 
 The full desired campaign atlas should eventually contain one tactical map for each grand-campaign turn and branch turn. Locally sourced maps should remain `needs-review` until source URL and rights are recorded.
 

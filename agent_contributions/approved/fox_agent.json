@@ -1,0 +1,126 @@
+[
+  {
+    "proposal_id": "british_recognition_1862_aee72213",
+    "type": "scenario_stage",
+    "status": "approved",
+    "agent": "fox_agent",
+    "created_at": "2026-06-02T22:36:56Z",
+    "content": {
+      "scenario_id": "british_recognition_1862",
+      "turn": 12,
+      "date": "October 1, 1862",
+      "actor": "Confederate Secretary of State",
+      "roleLabel": "Diplomatic Envoy to Britain",
+      "title": "The Cotton Diplomacy Crisis — Foreign Intervention Question",
+      "description": "British textile mills are starving for Southern cotton. The Confederacy withheld supplies, betting on British intervention. A decisive Confederate victory could sway Britain toward recognition.",
+      "letterTarget": "President Davis",
+      "source_notes": "Use Confederate diplomatic correspondence, British cabinet and parliamentary debate summaries, cotton-market evidence, and historians of Civil War diplomacy before integration.",
+      "power_analysis": "The branch should turn on British cabinet incentives, textile distress, Union counter-diplomacy, slavery policy, blockade risk, and whether Confederate battlefield success changes recognition calculations.",
+      "complexity_note": "British commercial pressure did not automatically equal intervention; ministers had to weigh cotton, neutrality, anti-slavery politics, Union retaliation, and imperial risk.",
+      "choices": [
+        {
+          "id": "aggressive_diplomacy",
+          "text": "Push aggressively for immediate British recognition and intervention.",
+          "proposer": "hotspur",
+          "costDescription": "May alienate neutral parties, increases Union resolve",
+          "consequence": "Your aggressive diplomatic push in London gains sympathetic ears. British merchants pressure Parliament. The Ministry debates intervention. But Union counter-diplomacy is fierce. Britain remains officially neutral.",
+          "effects": {
+            "metrics": {
+              "publicMorale": 20
+            },
+            "shards": {
+              "hotspur": 40,
+              "fox": -15
+            }
+          }
+        },
+        {
+          "id": "patient_diplomacy",
+          "text": "Wait for more Confederate victories before requesting intervention.",
+          "proposer": "fox",
+          "costDescription": "Delays potential support, extends war timeline",
+          "consequence": "You counsel patience. After Antietam, Northern success seems assured to the British. Recognition never comes. The Confederacy fights on alone. Your strategy preserves future options.",
+          "effects": {
+            "metrics": {
+              "publicMorale": -20
+            },
+            "shards": {
+              "fox": 30,
+              "hotspur": -20
+            }
+          }
+        }
+      ]
+    },
+    "validation_errors": [],
+    "is_valid": true,
+    "comments": [
+      "Reviewed and approved for future branch work, not current spine insertion."
+    ],
+    "submitted_at": "2026-06-02T22:36:56Z",
+    "review_note": "Approved as a future divergence-only branch candidate. It should attach to Potomac leverage / Antietam rather than become a disconnected standalone turn.",
+    "approved_at": "2026-06-02T22:50:52.052Z"
+  },
+  {
+    "proposal_id": "kentucky_loyalty_1861_32838e41",
+    "type": "scenario_stage",
+    "status": "approved",
+    "agent": "fox_agent",
+    "created_at": "2026-06-02T22:36:56Z",
+    "content": {
+      "scenario_id": "kentucky_loyalty_1861",
+      "turn": 6,
+      "date": "June 15, 1861",
+      "actor": "President Abraham Lincoln",
+      "roleLabel": "Union Commander-in-Chief",
+      "title": "Kentucky's Neutrality — A House Divided",
+      "description": "Kentucky is the border state everyone wants. Governor Magoffin desperately wants neutrality, but both governments covet the state. Military movements could shatter neutrality.",
+      "letterTarget": "General Winfield Scott",
+      "source_notes": "Use 1861 Kentucky neutrality proclamations, Lincoln administration correspondence, Magoffin's public statements, and military records around Columbus, Louisville, and the Ohio River corridor.",
+      "power_analysis": "The branch should turn on river control, state neutrality, Unionist and secessionist blocs, rail access, recruitment, and the danger that premature occupation changes Kentucky's alignment.",
+      "complexity_note": "Neutrality was not simple sympathy for either side; it was a political bargain inside a divided border state whose military geography both governments needed.",
+      "choices": [
+        {
+          "id": "respect_neutrality",
+          "text": "Respect Kentucky's neutrality, move supplies quietly.",
+          "proposer": "fox",
+          "costDescription": "Limited access, Confederate infiltration possible",
+          "consequence": "You respect Kentucky's declared neutrality. Union supplies flow quietly through neutral corridors. But Confederate sympathizers infiltrate the state apparatus. Kentucky slides toward secession.",
+          "effects": {
+            "metrics": {
+              "publicMorale": -25
+            },
+            "shards": {
+              "fox": 35,
+              "hotspur": -20
+            }
+          }
+        },
+        {
+          "id": "military_occupation",
+          "text": "Move the Army in to secure Louisville and strategic points.",
+          "proposer": "hotspur",
+          "costDescription": "Alienates Kentucky, may drive it toward Confederacy",
+          "consequence": "Union troops occupy Louisville and key river points. Kentucky explodes in anger. Secessionists rally. But Union control prevents Confederate invasion. Kentucky remains contested but Union-held.",
+          "effects": {
+            "metrics": {
+              "militaryStrength": 15
+            },
+            "shards": {
+              "hotspur": 45,
+              "fox": -20
+            }
+          }
+        }
+      ]
+    },
+    "validation_errors": [],
+    "is_valid": true,
+    "comments": [
+      "Reviewed and approved for future branch work, not current spine insertion."
+    ],
+    "submitted_at": "2026-06-02T22:36:56Z",
+    "review_note": "Approved as a future early-war branch candidate. It should attach to the opening border-state sequence rather than expand the current spine immediately.",
+    "approved_at": "2026-06-02T22:50:52.052Z"
+  }
+]

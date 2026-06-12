@@ -73,7 +73,7 @@ function request(urlString, redirectCount = 0) {
   const url = new URL(urlString);
   const client = clientFor(url);
   const headers = {
-    'User-Agent': 'Titans-of-War-AssetDownloader/0.3.0',
+    'User-Agent': 'Titans-of-War-AssetDownloader/0.3.1',
     Accept: 'audio/*,image/*,*/*;q=0.5',
   };
 

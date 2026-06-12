@@ -1,0 +1,118 @@
+[
+  {
+    "proposal_id": "gettysburg_campaign_1863_f6f8f487",
+    "type": "scenario_stage",
+    "status": "rejected",
+    "agent": "caesar_agent",
+    "created_at": "2026-06-02T22:36:56Z",
+    "content": {
+      "scenario_id": "gettysburg_campaign_1863",
+      "turn": 22,
+      "date": "June 3, 1863",
+      "actor": "General Robert E. Lee",
+      "roleLabel": "Confederate Commander, Army of Northern Virginia",
+      "title": "Invasion of the North — The Bold Gambit",
+      "description": "After two victories, the South is emboldened. Your army crosses the Potomac into Pennsylvania. Northern morale is fragile. A victory on Union soil could bring foreign recognition.",
+      "letterTarget": "President Jefferson Davis",
+      "choices": [
+        {
+          "id": "push_to_harrisburg",
+          "text": "Push boldly toward Harrisburg to threaten Washington.",
+          "proposer": "hotspur",
+          "costDescription": "Extended logistics, concentrated Union response",
+          "consequence": "Your bold advance toward Harrisburg shocks the North. Union forces concentrate rapidly. The Army of the Potomac marches to intercept you near Gettysburg. Battle is joined on unfavorable ground.",
+          "effects": {
+            "metrics": {
+              "militaryStrength": -30
+            },
+            "shards": {
+              "hotspur": 40
+            }
+          }
+        },
+        {
+          "id": "consolidate_pennsylvania",
+          "text": "Consolidate positions in Pennsylvania for a decisive pitched battle.",
+          "proposer": "fox",
+          "costDescription": "Allows Union concentration, but chosen ground",
+          "consequence": "You take deliberate positions near Gettysburg. The Union Army concentrates against you. Three days of intense fighting follow. The outcome hangs on artillery and discipline.",
+          "effects": {
+            "metrics": {
+              "militaryStrength": -25
+            },
+            "shards": {
+              "fox": 45
+            }
+          }
+        }
+      ]
+    },
+    "validation_errors": [],
+    "is_valid": true,
+    "comments": [
+      "Reviewed and declined for mainline integration."
+    ],
+    "submitted_at": "2026-06-02T22:36:56Z",
+    "review_note": "Rejected for the current build because the campaign already has a stronger Gettysburg setup plus Jackson-survives branch. This draft duplicated that role without adding a cleaner decision layer.",
+    "rejected_at": "2026-06-02T22:50:52.052Z"
+  },
+  {
+    "proposal_id": "petersburg_siege_1864_eba0c7ea",
+    "type": "scenario_stage",
+    "status": "rejected",
+    "agent": "caesar_agent",
+    "created_at": "2026-06-02T22:37:21Z",
+    "content": {
+      "scenario_id": "petersburg_siege_1864",
+      "turn": 28,
+      "date": "June 17, 1864",
+      "actor": "General Ulysses S. Grant",
+      "roleLabel": "Union Commander, Army of the Potomac",
+      "title": "Siege of Petersburg — The Grinding Offensive",
+      "description": "After weeks of maneuvering, the Army of the Potomac faces Lee's entrenched defenses at Petersburg. This rail hub is critical to Richmond's supply lines. Your scouts report Lee has fewer than 20,000 defenders. A quick breakthrough could end the war. But attack or siege? The cost of assault could be devastating.",
+      "letterTarget": "President Lincoln",
+      "choices": [
+        {
+          "id": "assault_petersburg",
+          "text": "Launch immediate assault on Confederate trenches.",
+          "proposer": "hotspur",
+          "costDescription": "High casualty rate, morale risk if repulsed",
+          "consequence": "The assault breaches Confederate lines at terrible cost. General Warren's corps suffers 4,000 casualties but gains two miles of trench. Lee shifts reserves to plug the gap. The position is precarious but promising.",
+          "effects": {
+            "metrics": {
+              "militaryStrength": -25,
+              "munitions": -30
+            },
+            "shards": {
+              "hotspur": 40,
+              "fox": -10
+            }
+          }
+        },
+        {
+          "id": "siege_petersburg",
+          "text": "Establish siege lines. Starve the garrison into submission.",
+          "proposer": "fox",
+          "costDescription": "Prolonged war, supply line pressure, political pressure at home",
+          "consequence": "Your army digs in around Petersburg in a nine-month siege. Supply lines stretch thin. The war grinds into attrition. But the Confederacy cannot sustain this. Civilian support wavers.",
+          "effects": {
+            "metrics": {
+              "publicMorale": 20
+            },
+            "shards": {
+              "fox": 40
+            }
+          }
+        }
+      ]
+    },
+    "validation_errors": [],
+    "is_valid": true,
+    "comments": [
+      "Reviewed and declined for mainline integration."
+    ],
+    "submitted_at": "2026-06-02T22:37:21Z",
+    "review_note": "Rejected for the current build because Petersburg is already a stronger authored scenario in the playable spine. This draft duplicated the slot and weakened late-war chronology.",
+    "rejected_at": "2026-06-02T22:50:52.052Z"
+  }
+]

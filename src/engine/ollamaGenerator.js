@@ -23,6 +23,7 @@
  */
 import { STATIC_SCENARIOS } from '../game/scenarios.js';
 import { divergenceTier, summarizeCabinetCrises, summarizePoliticalEconomy } from '../game/simulationEngine.js';
+import { buildPrimerContextNote } from '../game/historicalPrimers.js';
 
 
 const OLLAMA_BASE = 'http://localhost:11434';
@@ -85,9 +86,11 @@ Output MUST be valid JSON matching this exact schema (no extra text outside the 
 }
 
 Rules:
-- Keep effects in realistic ranges for the current metrics (militaryStrength, munitions, treasury, publicMorale are 0-100).
+- Every value inside effects.metrics is a DELTA applied to the current state, not a new absolute. Use small signed integers (typically -25 to +25 per metric).
+- Current state metrics (militaryStrength, munitions, treasury, foodSupply, publicMorale) are clamped 0-100 after deltas apply.
 - divergenceIndex deltas should be 0.03–0.15 per turn.
-- The four advisors must feel distinct in voice.
+- The four advisors must feel distinct in voice. Choices MUST cover all three of hotspur, fox, and wolf among the first three, with option_d carrying proposer "sovereign".
+- Use period-appropriate language. Frame consequences in terms of incentives, logistics, sectional interests, and structural realities of the 1861-1865 American war. Do not import modern academic vocabulary.
 - If the player just wrote a letter, the tone of the crisis should subtly reflect the emotional/ideological state expressed in that letter.
 - If cabinet crises are active or recently faced, the crisis must reflect those pressures through desertion, straggling, supply resistance, governor interference, bond panic, bread relief politics, or civilian-authority conflict appropriate to the unstable faction.
 - Output ONLY the JSON object. No markdown, no explanations.`;
@@ -129,8 +132,11 @@ function buildPoliticalEconomyNote(state) {
 
 /**
  * Build the user prompt from current state + optional letter sentiment.
+ * The optional activeScenario argument carries forward primer tags so the
+ * model receives the same sourced ground-truth context the player can see
+ * in the in-game Historical Context panel.
  */
-function buildPrompt(state, letterSentiment = null) {
+function buildPrompt(state, letterSentiment = null, activeScenario = null) {
   const { metrics, shards, divergenceIndex, history, actor, roleLabel } = state;
   const divergenceState = divergenceTier(divergenceIndex);
 
@@ -141,6 +147,7 @@ function buildPrompt(state, letterSentiment = null) {
 
   const cabinetPressureNote = buildCabinetPressureNote(state);
   const politicalEconomyNote = buildPoliticalEconomyNote(state);
+  const primerContextNote = activeScenario ? buildPrimerContextNote(activeScenario) : '';
 
   const recentHistory = (history || []).slice(-3).map((entry) => {
     const outcomeNote = typeof entry.choiceSucceeded === 'boolean'
@@ -157,7 +164,7 @@ function buildPrompt(state, letterSentiment = null) {
 Actor: ${actor} (${roleLabel})
 Divergence from real history: ${(divergenceIndex * 100).toFixed(1)}% (${divergenceState.label})
 Timeline note: ${divergenceState.note}
-Resources: Military ${metrics.militaryStrength} | Munitions ${metrics.munitions} | Treasury ${metrics.treasury} | Morale ${metrics.publicMorale}
+Resources: Military ${metrics.militaryStrength} | Munitions ${metrics.munitions} | Treasury ${metrics.treasury} | Food ${metrics.foodSupply} | Morale ${metrics.publicMorale}
 Faction Shards: Hotspur=${shards.hotspur.alignment}%, Fox=${shards.fox.alignment}%, Wolf=${shards.wolf.alignment}%
 
 Recent history:
@@ -166,6 +173,7 @@ ${recentHistory || 'Campaign just beginning.'}
 ${cabinetPressureNote}
 
 ${politicalEconomyNote}
+${primerContextNote}
 
 ${letterNote}
 
@@ -176,8 +184,8 @@ Generate the next crisis now.`;
  * Call the local Ollama model with the State Vector and get structured JSON.
  * Falls back to a high-quality static mutation if Ollama is unreachable (keeps the game playable).
  */
-export async function generateNextScenario(state, letterSentiment = null, model = FALLBACK_MODEL) {
-  const prompt = buildPrompt(state, letterSentiment);
+export async function generateNextScenario(state, letterSentiment = null, model = FALLBACK_MODEL, activeScenario = null) {
+  const prompt = buildPrompt(state, letterSentiment, activeScenario);
   const startedAt = Date.now();
 
   try {
@@ -213,10 +221,30 @@ export async function generateNextScenario(state, letterSentiment = null, model 
       throw new Error('Model returned malformed scenario');
     }
 
+    // The Python contributor validator (tools/agents/validators.py) requires
+    // 3+ choice scenarios to cover hotspur, fox, and wolf. Mirror that rule
+    // here so a misbehaving local model cannot smuggle four identical
+    // advisor voices into the live game.
+    const proposers = new Set(parsed.choices.map((choice) => choice?.proposer));
+    if (!['hotspur', 'fox', 'wolf'].every((voice) => proposers.has(voice))) {
+      throw new Error('Generated scenario missing required hotspur/fox/wolf voices');
+    }
+
     // Ensure every choice has effects (defensive)
     parsed.choices.forEach(c => {
       c.effects = c.effects || { metrics: {}, shards: {} };
     });
+
+    // Stable identifiers so chronicleExporter, classifyCampaignEnding, and
+    // replay determinism can recognize a generated turn rather than silently
+    // keep the previous scenarioId in state.
+    parsed.id = parsed.id || `gen_${state.seed}_${state.currentTurn}`;
+    parsed.actor = parsed.actor || state.actor;
+    parsed.roleLabel = parsed.roleLabel || state.roleLabel;
+    parsed.letterTarget = parsed.letterTarget || 'your wife';
+    // Rubric honesty: a generated turn is not a sourced historical claim.
+    parsed.sourceNotes = parsed.sourceNotes
+      || 'Procedurally generated by the local model. Not a sourced historical claim; treat as counterfactual extension of the campaign.';
 
     // Real telemetry from Ollama's response (no fabricated numbers).
     const telemetry = {
@@ -244,9 +272,8 @@ export async function generateNextScenario(state, letterSentiment = null, model 
       ? STATIC_SCENARIOS.find((scenario) => scenario.id === state.nextScenarioId)
       : null;
     const base = branchedScenario
-      || (state.currentTurn <= 12
-        ? STATIC_SCENARIOS[state.currentTurn - 1]
-        : STATIC_SCENARIOS[11]);
+      || STATIC_SCENARIOS.find((scenario) => scenario.turn === state.currentTurn)
+      || STATIC_SCENARIOS[STATIC_SCENARIOS.length - 1];
 
     const divergence = (state.divergenceIndex || 0) * 100;
     const sentimentNote = letterSentiment
@@ -254,10 +281,13 @@ export async function generateNextScenario(state, letterSentiment = null, model 
       : '';
     const cabinetNote = buildFallbackCabinetNote(state);
 
+    // Preserve the authored period-fidelity prose untouched. The banner and
+    // bannerNote fields carry the cabinet/sentiment context without rewriting
+    // the original description that the UI is about to render.
     return {
       ...base,
-      title: `[offline] ${base.title}`,
-      narrative: `${base.description}${sentimentNote}${cabinetNote} Timeline divergence stands at ${divergence.toFixed(0)}%.`,
+      banner: `[offline] ${base.title}`,
+      bannerNote: `${sentimentNote}${cabinetNote} Timeline divergence stands at ${divergence.toFixed(0)}%.`,
       source: 'fallback:scripted',
       live: false,
       telemetry: { model, latencyMs: Date.now() - startedAt, reason: err.message },
