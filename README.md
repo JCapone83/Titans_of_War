@@ -42,12 +42,23 @@ Titans of War is both a game and a public proof artifact for Titans Forge. The g
 
 ## Quick Start
 
+If you do not use Git, read [GETTING_STARTED.md](GETTING_STARTED.md). It explains the green GitHub **Code** button, ZIP download, and the double-click launchers.
+
 ```bash
 npm install
-npm run dev
+npm start
 ```
 
-Open the local Vite URL shown in the terminal.
+Your browser should open automatically. If it does not, use the local URL printed in the terminal.
+
+For people comfortable with Git:
+
+```bash
+git clone https://github.com/JCapone83/Titans_of_War.git
+cd Titans_of_War
+npm install
+npm start
+```
 
 For recording or quick review, use `LOAD HEADLINE DEMO` in the Campaign Archive panel. It opens at Cedar Creek with a curated alternate-history record. A strong result reaches the McClellan election, where the player can conclude the run through a proposed Concurrent Majority settlement.
 
