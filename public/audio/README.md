@@ -9,6 +9,7 @@ The public release currently ships these source-verified recordings:
 - fife_drum_march.mp3
 - battle_hymn_triumphant.mp3
 - yellow_rose_march.mp3
+- dixie_instrumental.mp3
 - tenting_tonight.mp3
 - elegy_final.mp3
 - just_before_battle_mother.mp3
@@ -21,7 +22,6 @@ Optional local recordings may use these reserved filenames:
 
 - lorena_instrumental.mp3
 - lorena_melancholic.mp3
-- dixie_instrumental.mp3
 - bonnie_blue_flag_instrumental.mp3
 - aura_lea.mp3
 - home_sweet_home.mp3

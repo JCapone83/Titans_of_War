@@ -68,10 +68,11 @@ Each shipped audio recording is tied to its audited source download by a
 SHA-256 hash in `src/game/historicalAssetManifest.js`. Run
 `npm run validate-assets` to verify the local release files.
 
-The inactive `dixie_instrumental.mp3` recording is CC BY-SA 4.0 and is excluded
-from the public release. `lorena_instrumental.mp3` is included again using a
-trimmed Library of Congress Citizen DJ source file whose item page states that
-the recording is free to use and reuse, including commercial use. Optional recordings
+The `dixie_instrumental.mp3` recording is included as separately licensed
+CC BY-SA 4.0 Wikimedia Commons media; it is not relicensed under the project's
+MIT code license. `lorena_instrumental.mp3` is included again using a trimmed
+Library of Congress Citizen DJ source file whose item page states that the
+recording is free to use and reuse, including commercial use. Optional recordings
 and maps marked
 `recording-needed` or `needs-review` are also excluded until their exact source
 and redistribution status are verified.

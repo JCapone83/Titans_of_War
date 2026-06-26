@@ -216,7 +216,7 @@ export function buildCampaignChronicle(state, options = {}) {
   markdown += `The Grand Campaign is accompanied by highly authentic 19th-century musical scores and loops. Below is the historical catalog and scholarly sheet music references:\n\n`;
 
   AUDIO_TRACK_LIBRARY.forEach((track) => {
-    if (track.licenseStatus === 'verified-public-domain') {
+    if (track.licenseStatus === 'verified-public-domain' || track.licenseStatus === 'verified-free-license') {
       markdown += `* **"${track.title}"** (${track.era}, ${track.mood}) — *${track.credit}*\n`;
       if (track.sheetMusicUrl) {
         markdown += `  * 🎼 **Scholarly Sheet Music & PDF Score**: [Access Score Page](${track.sheetMusicUrl})\n`;
