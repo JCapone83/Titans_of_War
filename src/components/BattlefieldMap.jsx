@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { resolveScenarioMediaSet } from '../game/mediaCatalog.js';
 import { getMapAnnotation, MAP_CANVAS_SIZE } from '../game/mapAnnotations.js';
+import { publicAssetUrl } from '../game/publicPath.js';
 
 function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value));
@@ -601,7 +602,7 @@ export default function BattlefieldMap({ scenarioId, selectedChoiceId }) {
   const [showLoupe, setShowLoupe] = useState(false);
   const media = resolveScenarioMediaSet(scenarioId).tacticalMap;
   const annotation = getMapAnnotation(scenarioId);
-  const mapSrc = media.src || '';
+  const mapSrc = publicAssetUrl(media.src || '');
   const hasHistoricalMap = Boolean(mapSrc);
 
   useEffect(() => {

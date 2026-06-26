@@ -29,6 +29,7 @@
     "dev": "vite",
     "start": "node scripts/launch.mjs",
     "build": "vite build",
+    "build:itch": "npm run build && cd dist && zip -r ../titans-of-war-itch.zip .",
     "benchmark": "node scripts/benchmark-engine.mjs",
     "test": "node scripts/smoke-test.mjs && node scripts/validate-content.mjs && npm run validate:agents",
     "validate-assets": "node scripts/validate-assets.mjs",

@@ -6,6 +6,7 @@ magenta-realtime/
 # Build and package output
 dist/
 *.tgz
+*.zip
 public/assets-download-report.json
 
 # Logs and local runtime state

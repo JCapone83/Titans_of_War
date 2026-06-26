@@ -11,6 +11,7 @@
  * This guarantees immersive audio out-of-the-box with zero bandwidth/download requirements.
  */
 import { AUDIO_TRACK_LIBRARY } from '../game/audioCatalog.js';
+import { publicAssetUrl } from '../game/publicPath.js';
 
 // Note frequencies (C4 to B5)
 const NOTES = {
@@ -70,7 +71,10 @@ const PROCEDURAL_TRACK_INFO = {
   bonnie_blue_flag: { title: 'The Bonnie Blue Flag', tempoBpm: 92 },
 };
 
-const FILE_TRACK_LIBRARY = AUDIO_TRACK_LIBRARY;
+const FILE_TRACK_LIBRARY = AUDIO_TRACK_LIBRARY.map((track) => ({
+  ...track,
+  src: publicAssetUrl(track.src),
+}));
 const BUS_BASE_LEVELS = {
   music: 1,
   ambience: 0.32,

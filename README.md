@@ -44,6 +44,8 @@ Titans of War is both a game and a public proof artifact for Titans Forge. The g
 
 If you do not use Git, read [GETTING_STARTED.md](GETTING_STARTED.md). It explains the green GitHub **Code** button, ZIP download, and the double-click launchers.
 
+For the easiest player-facing browser release, Titans of War can also be published as an itch.io HTML5 build. See [docs/itch-io.md](docs/itch-io.md).
+
 ```bash
 npm install
 npm start

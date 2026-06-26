@@ -12,6 +12,7 @@ import { generateAdvisorDebate } from './game/advisorDebate';
 import { buildCampaignBundle } from './game/campaignBundle';
 import { buildCampaignChronicle } from './game/chronicleExporter';
 import { resolveCampaignEndingMedia } from './game/mediaCatalog';
+import { publicAssetUrl } from './game/publicPath';
 import { generateNextScenario, listOllamaModels, classifyLetterSentiment } from './engine/ollamaGenerator';
 import { compareModelProfiles, RECOMMENDED_LOCAL_MODEL, resolveModelProfile } from './engine/modelCapabilities';
 import { StrategyAudioManager } from './engine/StrategyAudioManager';
@@ -1343,7 +1344,7 @@ export default function App() {
               {endingMedia && (
                 <div style={{ position: 'relative', borderRadius: '8px', overflow: 'hidden', border: '1px solid rgba(212,175,55,0.22)', background: '#090c10', height: 'clamp(280px, 42vw, 430px)' }}>
                   <img
-                    src={endingMedia.src}
+                    src={publicAssetUrl(endingMedia.src)}
                     alt={endingMedia.title}
                     style={{
                       width: '100%',

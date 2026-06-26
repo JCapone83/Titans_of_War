@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Image as ImageIcon, Map } from 'lucide-react';
 import { resolveScenarioMedia } from '../game/mediaCatalog.js';
+import { publicAssetUrl } from '../game/publicPath.js';
 import BattlefieldMap from './BattlefieldMap.jsx';
 
 /**
@@ -26,7 +27,7 @@ export default function ScenarioTheater({ scenario, gameState, selectedChoiceId 
   const media = useScenarioArt
     ? {
         ...catalogMedia,
-        src: scenario.image,
+        src: publicAssetUrl(scenario.image),
         kind: 'generated-art',
         title: `${scenario?.title || 'Scenario'} Art`,
         caption: 'AI-created Titans of War scenario art for this campaign decision.',
@@ -37,7 +38,10 @@ export default function ScenarioTheater({ scenario, gameState, selectedChoiceId 
         cropMode: 'wide',
         theaterOpacity: 0.94,
       }
-    : catalogMedia;
+    : {
+        ...catalogMedia,
+        src: publicAssetUrl(catalogMedia.src),
+      };
   const heroHeight = media.cropMode === 'portrait'
     ? 'clamp(320px, 48vw, 420px)'
     : 'clamp(260px, 36vw, 360px)';
@@ -182,7 +186,7 @@ export default function ScenarioTheater({ scenario, gameState, selectedChoiceId 
               border: '1px solid rgba(212,175,55,0.22)',
               boxShadow: '0 2px 8px rgba(0,0,0,0.55)',
             }}>
-              <img src={scenario.image} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              <img src={publicAssetUrl(scenario.image)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             </div>
           )}
         </div>
