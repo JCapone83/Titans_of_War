@@ -1,5 +1,16 @@
 # Titans of War
 
+[Play on itch.io](https://titans-forge.itch.io/titans-of-war-civil-war) ·
+[Forge source](https://github.com/titans-forge/Titans_of_War) ·
+[Report an issue](https://github.com/titans-forge/Titans_of_War/issues) ·
+[Game collection](https://github.com/titans-forge/educational-games)
+
+This is the Civil War entry in the Titans of War collection. The existing
+repository moved from JCapone83 to Titans Forge on September 30, 2026, retaining
+its history and licensing checkpoints. Historical owner names in those records
+remain intentional; earlier MIT grants and separate media rights are preserved.
+The source branch is not certified to match the current itch.io build.
+
 Titans of War is a source-available historical strategy prototype from Titans Forge. It turns Civil War command decisions into a playable pressure system: logistics, food, morale, cabinet politics, military strength, and alternate-history divergence all compound across a campaign.
 
 The game is local-first. It runs in scripted deterministic mode without any AI service, and it can optionally use a local Ollama model as a decision/generation layer when one is available. The project is educational; it is not an endorsement of any historical faction or ideology.
@@ -56,7 +67,7 @@ Your browser should open automatically. If it does not, use the local URL printe
 For people comfortable with Git:
 
 ```bash
-git clone https://github.com/JCapone83/Titans_of_War.git
+git clone https://github.com/titans-forge/Titans_of_War.git
 cd Titans_of_War
 npm install
 npm start

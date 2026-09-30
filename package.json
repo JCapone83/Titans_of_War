@@ -8,12 +8,12 @@
   "author": "Titans Forge",
   "repository": {
     "type": "git",
-    "url": "https://github.com/JCapone83/Titans_of_War.git"
+    "url": "https://github.com/titans-forge/Titans_of_War.git"
   },
   "bugs": {
-    "url": "https://github.com/JCapone83/Titans_of_War/issues"
+    "url": "https://github.com/titans-forge/Titans_of_War/issues"
   },
-  "homepage": "https://github.com/JCapone83/Titans_of_War#readme",
+  "homepage": "https://titans-forge.itch.io/titans-of-war-civil-war",
   "keywords": [
     "strategy-game",
     "history",
