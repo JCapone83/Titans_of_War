@@ -1,6 +1,6 @@
 # Titans of War
 
-Titans of War is an open-source historical strategy prototype from Titans Forge. It turns Civil War command decisions into a playable pressure system: logistics, food, morale, cabinet politics, military strength, and alternate-history divergence all compound across a campaign.
+Titans of War is a source-available historical strategy prototype from Titans Forge. It turns Civil War command decisions into a playable pressure system: logistics, food, morale, cabinet politics, military strength, and alternate-history divergence all compound across a campaign.
 
 The game is local-first. It runs in scripted deterministic mode without any AI service, and it can optionally use a local Ollama model as a decision/generation layer when one is available. The project is educational; it is not an endorsement of any historical faction or ideology.
 
@@ -15,8 +15,8 @@ Titans of War is both a game and a public proof artifact for Titans Forge. The g
 - Era: American Civil War campaign scenarios
 - Runtime: browser app built with React and Vite
 - AI requirement: none; local Ollama support is optional
-- Release channel: GitHub-first open source project
-- Code license: MIT
+- Release channel: GitHub-first source-available project; prior MIT grants retained
+- Current project policy: Forge Game Hosting License 1.0; earlier MIT code grants retained
 - Media license: separate per asset; see `NOTICE` and the media manifests
 
 ## Features
@@ -130,7 +130,7 @@ Reaching `100%` divergence does not automatically end the game. It records a ful
 
 ## Media Policy
 
-The source code is MIT licensed. Historical images, audio recordings, and other media keep their own rights status.
+Previously published source code retains its MIT licence; new covered material follows the checkpoint in `LICENSING.md`. Historical images, audio recordings, and other media keep their own rights status.
 
 Verified public-domain or permissively licensed assets are documented in:
 
@@ -198,6 +198,19 @@ npm run build
 
 ## License
 
-Code is released under the MIT License. See `LICENSE`.
+Current project policy: [Forge Game Hosting License 1.0](LICENSE), with the
+release boundary recorded in [LICENSING.md](LICENSING.md) and
+[LICENSING_CHECKPOINT.json](LICENSING_CHECKPOINT.json).
 
-Media assets are not automatically covered by MIT. See `NOTICE`.
+For newly covered material, companies with gross annual revenue **over
+US$1,000,000** need a separate written licence to publicly host their own playable
+copy. Ordinary playing and private internal/classroom use do not require one.
+See the full terms for platform embeds, revenue calculation and exceptions.
+
+**Earlier MIT permissions remain available.** The original notice is preserved in
+[LICENSE-LEGACY-MIT.txt](LICENSE-LEGACY-MIT.txt). Previously MIT-licensed code,
+documentation and assets keep those grants, including hosting rights for the same
+material. Existing media and third-party rights/credits remain unchanged.
+This policy update does not rewrite old releases or make identical MIT material
+exclusively Forge-licensed. Future covered game changes need a distinct release
+boundary. [Commercial inquiries](https://titans-forge.itch.io/).

@@ -1,5 +1,12 @@
 # Titans of War Media Rights
 
+> Licensing checkpoint, September 30, 2026: the current project policy is
+> [Forge Game Hosting License 1.0](LICENSE); see [LICENSING.md](LICENSING.md).
+> All earlier MIT grants and separately licensed media terms recorded below
+> remain available. References below to MIT describe the preserved grants, not
+> a blanket grant for newly authored Forge-covered material. The original MIT
+> notice is retained in [LICENSE-LEGACY-MIT.txt](LICENSE-LEGACY-MIT.txt).
+
 This document separates the MIT-licensed application code from the images and
 audio distributed with Titans of War. It is a release record, not legal advice.
 
